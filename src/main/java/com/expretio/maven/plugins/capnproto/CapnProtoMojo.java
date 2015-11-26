@@ -35,13 +35,13 @@ import org.apache.maven.project.MavenProject;
 public class CapnProtoMojo
     extends AbstractMojo
 {
-    @Parameter( defaultValue = "${project}", readonly = true )
+    @Parameter(defaultValue = "${project}", readonly = true)
     private MavenProject mavenProject;
 
-    @Parameter( defaultValue = "${session}", readonly = true )
+    @Parameter(defaultValue = "${session}", readonly = true)
     private MavenSession mavenSession;
 
-    @Parameter( defaultValue = "false" )
+    @Parameter(defaultValue = "false")
     private boolean verbose;
 
     @Override
