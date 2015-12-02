@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -25,38 +26,36 @@ public class CapnpCompiler
     private static final String CAPNP_PROGRAM = RESOURCE_DIR + "capnp";
     private static final String CAPNPC_JAVA = RESOURCE_DIR + "capnpc-java";
     private static final String JAVA_SCHEMA = RESOURCE_DIR + "java.capnp";
-    private static final String DEFAULT_OUTPUT_DIR = "target/generated-sources";
-    private static final String DEFAULT_SCHEMA_BASE_DIR = "src/main/schema";
 
     public static Builder builder()
     {
         return new Builder();
     }
 
-    private List<File> importDirectories;
     private File outputDirectory;
     private File schemaBaseDirectory;
+    private List<File> importDirectories;
     private List<File> schemas;
 
     private File capnpcjava = new File(CAPNPC_JAVA);
+    private File javaschema = new File(JAVA_SCHEMA);
 
     /**
      * Constructor.
      */
-    private CapnpCompiler(List<File> importDirectories, File outputDirectory, File schemaBaseDirectory,
-        List<File> schemas)
-            throws MojoFailureException
+    private CapnpCompiler(File outputDir, File schemaBaseDir, List<File> importDirs, List<File> schemas)
+        throws MojoFailureException
     {
-        this.importDirectories = importDirectories;
-        this.outputDirectory = outputDirectory;
-        this.schemaBaseDirectory = schemaBaseDirectory;
+        this.outputDirectory = outputDir;
+        this.schemaBaseDirectory = schemaBaseDir;
+        this.importDirectories = importDirs;
         this.schemas = schemas;
 
-        validate(importDirectories, outputDirectory, schemaBaseDirectory, schemas);
+        validate();
         initialize();
     }
 
-    public int compile() throws MojoExecutionException
+    public void compile() throws MojoExecutionException
     {
         List<String> command = createCommand();
 
@@ -68,7 +67,12 @@ public class CapnpCompiler
 
             Process process = processBuilder.start();
 
-            return process.waitFor();
+            int exit = process.waitFor();
+
+            if (exit != 0)
+            {
+                throw new MojoExecutionException("Unexpected compilation process exit value: " + exit);
+            }
         }
         catch(IOException | InterruptedException e)
         {
@@ -133,15 +137,9 @@ public class CapnpCompiler
         }
     }
 
-    private void validate(List<File> importDirectories, File outputDirectory, File schemaBaseDirectory,
-        List<File> schemas)
-            throws MojoFailureException
+    private void validate()
+        throws MojoFailureException
     {
-        if (importDirectories == null)
-        {
-            throw new MojoFailureException("Import directories may be empty but not null.");
-        }
-
         if (outputDirectory == null)
         {
             throw new MojoFailureException("Output directory must be specified.");
@@ -157,60 +155,91 @@ public class CapnpCompiler
             throw new MojoFailureException("Schema base directory must be specified.");
         }
 
+        if (schemaBaseDirectory.isFile())
+        {
+            throw new MojoFailureException("Schema base directory must not be a file.");
+        }
+
+        for (File importDirectory : importDirectories)
+        {
+            if (importDirectory.isFile())
+            {
+                throw new MojoFailureException("Import directory must not be a file: " + importDirectory);
+            }
+        }
+
         if (schemas.isEmpty())
         {
-            throw new MojoFailureException("At least one schema must be specified.");
+            throw new MojoFailureException("At least one schema file must be specified.");
+        }
+
+        for (File schema : schemas)
+        {
+            if (schema.isDirectory())
+            {
+                throw new MojoFailureException("Schema file must not be a directory: " + schema);
+            }
         }
     }
 
     private void initialize()
     {
         outputDirectory.mkdirs();
+        importDirectories.add(javaschema.getParentFile());
     }
 
     // [Inner classes]
 
     public static class Builder
     {
+        private File outputDirectory;
+        private File schemaBaseDirectory;
         private List<File> importDirectories = Lists.newArrayList();
-        private File outputDirectory = new File(DEFAULT_OUTPUT_DIR);
-        private File schemaBaseDirectory = new File(DEFAULT_SCHEMA_BASE_DIR);
         private List<File> schemas = Lists.newArrayList();
-
-        public Builder()
-        {
-            importDirectories.add(new File(JAVA_SCHEMA).getParentFile());
-        }
 
         public CapnpCompiler build() throws MojoFailureException
         {
-            return new CapnpCompiler(importDirectories, outputDirectory, schemaBaseDirectory, schemas);
+            return new CapnpCompiler(outputDirectory, schemaBaseDirectory, importDirectories, schemas);
         }
 
-        public Builder addImportDirectory(String importDirectory)
+        public Builder setOutputDirectory(File outputDirectory)
         {
-            importDirectories.add(new File(importDirectory));
+            this.outputDirectory = outputDirectory;
 
             return this;
         }
 
-        public Builder setOutputDirectory(String outputDirectory)
+        public Builder setSchemaBaseDirectory(File schemaBaseDirectory)
         {
-            this.outputDirectory = new File(outputDirectory);
+            this.schemaBaseDirectory = schemaBaseDirectory;
 
             return this;
         }
 
-        public Builder setSchemaBaseDirectory(String schemaBaseDirectory)
+        public Builder addImportDirectory(File importDirectory)
         {
-            this.schemaBaseDirectory = new File(schemaBaseDirectory);
+            importDirectories.add(importDirectory);
 
             return this;
         }
 
-        public Builder addSchema(String schema)
+        public Builder addImportDirectory(Collection<File> importDirectories)
         {
-            schemas.add(new File(schema));
+            importDirectories.addAll(importDirectories);
+
+            return this;
+        }
+
+        public Builder addSchema(File schema)
+        {
+            schemas.add(schema);
+
+            return this;
+        }
+
+        public Builder addSchemas(Collection<File> schemas)
+        {
+            schemas.addAll(schemas);
 
             return this;
         }

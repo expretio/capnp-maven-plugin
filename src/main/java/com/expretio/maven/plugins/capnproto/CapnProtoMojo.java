@@ -16,6 +16,16 @@
  */
 package com.expretio.maven.plugins.capnproto;
 
+import static org.apache.commons.io.filefilter.FileFilterUtils.*;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -44,9 +54,75 @@ public class CapnProtoMojo
     @Parameter(defaultValue = "false")
     private boolean verbose;
 
+    @Parameter(defaultValue = "target/generated-sources")
+    private File outputDirectory;
+
+    @Parameter(defaultValue = "src/main/schema")
+    private File schemaBaseDirectory;
+
+    @Parameter(defaultValue = "capnp")
+    private String schemaFileExtension;
+
+    @Parameter(defaultValue = "false")
+    private boolean allSchemas;
+
+    @Parameter
+    private List schemas;
+
+// FIXME:
+//    @Parameter
+//    private File importDirectory;
+//
+//    @Parameter
+//    private List importDirectories;
+
     @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
+        validate();
+
+        CapnpCompiler compiler = CapnpCompiler.builder()
+            .setOutputDirectory(outputDirectory)
+            .setSchemaBaseDirectory(schemaBaseDirectory)
+            .addSchemas(getSchemas())
+            .build();
+
+        compiler.compile();
     }
+
+    // [Utility methods]
+
+    private void validate() throws MojoFailureException
+    {
+        if (allSchemas && CollectionUtils.isEmpty(schemas))
+        {
+            throw new MojoFailureException("Only once of {allSchemas, schemas} can be specified.");
+        }
+
+        if (!allSchemas && !CollectionUtils.isEmpty(schemas))
+        {
+            throw new MojoFailureException("One of {allSchemas, schemas} must be specified.");
+        }
+    }
+
+    private Collection<File> getSchemas()
+    {
+        if (allSchemas)
+        {
+            return getAllSchemas();
+        }
+
+        return schemas;
+    }
+
+    private Collection<File> getAllSchemas()
+    {
+        IOFileFilter extensionFilter = suffixFileFilter("." + schemaFileExtension);
+        IOFileFilter fileFilter = fileFileFilter();
+        IOFileFilter filter = and(extensionFilter, fileFilter);
+
+        return FileUtils.listFiles(schemaBaseDirectory, filter, TrueFileFilter.INSTANCE);
+    }
+
 }
