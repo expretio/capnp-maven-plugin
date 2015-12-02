@@ -54,7 +54,10 @@ public class CapnProtoMojo
     @Parameter(defaultValue = "false")
     private boolean verbose;
 
-    @Parameter(defaultValue = "target/generated-sources")
+    /**
+     * Output directory of generated java classes.
+     */
+    @Parameter(defaultValue = "target/generated-sources", required = true)
     private File outputDirectory;
 
     @Parameter(defaultValue = "src/main/schema")
