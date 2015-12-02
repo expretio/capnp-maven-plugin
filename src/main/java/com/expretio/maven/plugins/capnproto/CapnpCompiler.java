@@ -51,7 +51,17 @@ public class CapnpCompiler
 
     public void compile() throws MojoExecutionException
     {
-        List<String> command = createCommand();
+        for (File schema : schemas)
+        {
+            compile(schema);
+        }
+    }
+
+    // [Utility methods]
+
+    private void compile(File schema) throws MojoExecutionException
+    {
+        List<String> command = createCommand(schema);
 
         try
         {
@@ -65,18 +75,16 @@ public class CapnpCompiler
 
             if (exit != 0)
             {
-                throw new MojoExecutionException("Unexpected compilation process exit value: " + exit);
+                throw new MojoExecutionException("Unexpected exit value (" + exit + ") while compiling " + schema);
             }
         }
         catch(IOException | InterruptedException e)
         {
-            throw new MojoExecutionException("Cannot compile capnproto schemas: " + e.getMessage());
+            throw new MojoExecutionException("Cannot compile capnproto schemas " + schema + ": " + e.getMessage());
         }
     }
 
-    // [Utility methods]
-
-    private List<String> createCommand() throws MojoExecutionException
+    private List<String> createCommand(File schema) throws MojoExecutionException
     {
         List<String> command = Lists.newArrayList();
 
@@ -90,10 +98,7 @@ public class CapnpCompiler
             command.add("-I" + importDirectory.getAbsolutePath());
         }
 
-        for (File schema : schemas)
-        {
-            command.add(schema.getPath());
-        }
+        command.add(schema.getPath());
 
         return command;
     }
@@ -180,6 +185,7 @@ public class CapnpCompiler
     {
         outputDirectory.mkdirs();
         importDirectories.add(resources.getJavaSchemaDirectory());
+        importDirectories.add(schemaBaseDirectory);
     }
 
     // [Inner classes]

@@ -12,8 +12,9 @@ public class CapnpCompilerTest
 {
     private File outputDirectory = new File("target/capnpCompilerTest");
     private File schemaBaseDirectory = new File("src/test/resources/schema");
-    private File periodSchema = new File("com/expretio/appia/demand/period.capnp");
-    private File marketSchema = new File("com/expretio/appia/core/commercial/market.capnp");
+    private File alternativeSchema = new File("com/expretio/appia/demand/alternative/alternative.capnp");
+    private File terminalSchema = new File("com/expretio/appia/demand/alternative/terminal.capnp");
+    private File preferenceListSchema = new File("com/expretio/appia/demand/profile/preference_list.capnp");
 
     @Test
     public void test() throws MojoFailureException, MojoExecutionException
@@ -21,8 +22,9 @@ public class CapnpCompilerTest
         CapnpCompiler compiler = CapnpCompiler.builder()
             .setOutputDirectory(outputDirectory)
             .setSchemaBaseDirectory(schemaBaseDirectory)
-            .addSchema(periodSchema)
-            .addSchema(marketSchema)
+            .addSchema(alternativeSchema)
+            .addSchema(terminalSchema)
+            .addSchema(preferenceListSchema)
             .build();
 
         compiler.compile();
