@@ -63,9 +63,6 @@ public class CapnProtoMojo
     @Parameter(defaultValue = "capnp")
     private String schemaFileExtension;
 
-    @Parameter(defaultValue = "false")
-    private boolean allSchemas;
-
     @Parameter
     private List schemas;
 
@@ -80,8 +77,6 @@ public class CapnProtoMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        validate();
-
         CapnpCompiler compiler = CapnpCompiler.builder()
             .setOutputDirectory(outputDirectory)
             .setSchemaBaseDirectory(schemaBaseDirectory)
@@ -93,22 +88,9 @@ public class CapnProtoMojo
 
     // [Utility methods]
 
-    private void validate() throws MojoFailureException
-    {
-        if (allSchemas && CollectionUtils.isEmpty(schemas))
-        {
-            throw new MojoFailureException("Only once of {allSchemas, schemas} can be specified.");
-        }
-
-        if (!allSchemas && !CollectionUtils.isEmpty(schemas))
-        {
-            throw new MojoFailureException("One of {allSchemas, schemas} must be specified.");
-        }
-    }
-
     private Collection<File> getSchemas()
     {
-        if (allSchemas)
+        if (CollectionUtils.isEmpty(schemas))
         {
             return getAllSchemas();
         }

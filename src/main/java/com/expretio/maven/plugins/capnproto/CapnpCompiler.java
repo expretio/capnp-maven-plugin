@@ -22,23 +22,17 @@ import com.google.common.collect.Lists;
  */
 public class CapnpCompiler
 {
-    private static final String RESOURCE_DIR = "src/main/resources/";
-    private static final String CAPNP_PROGRAM = RESOURCE_DIR + "capnp";
-    private static final String CAPNPC_JAVA = RESOURCE_DIR + "capnpc-java";
-    private static final String JAVA_SCHEMA = RESOURCE_DIR + "java.capnp";
-
     public static Builder builder()
     {
         return new Builder();
     }
 
+    private ResourceProvider resources = ResourceProvider.create();
+
     private File outputDirectory;
     private File schemaBaseDirectory;
     private List<File> importDirectories;
     private List<File> schemas;
-
-    private File capnpcjava = new File(CAPNPC_JAVA);
-    private File javaschema = new File(JAVA_SCHEMA);
 
     /**
      * Constructor.
@@ -89,7 +83,7 @@ public class CapnpCompiler
         command.add(getBaseCommand());
         command.add("compile");
         command.add("--verbose");
-        command.add("-o" + capnpcjava.getAbsolutePath() + ":" + outputDirectory.getAbsolutePath());
+        command.add("-o" + resources.getCapnpcJava().getAbsolutePath() + ":" + outputDirectory.getAbsolutePath());
 
         for (File importDirectory : importDirectories)
         {
@@ -109,7 +103,7 @@ public class CapnpCompiler
         File file = createTempFile();
 
         try(OutputStream os = new FileOutputStream(file);
-            InputStream is = new FileInputStream(CAPNP_PROGRAM);)
+            InputStream is = new FileInputStream(resources.getCapnp());)
         {
             IOUtils.copy(is, os);
         }
@@ -185,7 +179,7 @@ public class CapnpCompiler
     private void initialize()
     {
         outputDirectory.mkdirs();
-        importDirectories.add(javaschema.getParentFile());
+        importDirectories.add(resources.getJavaSchemaDirectory());
     }
 
     // [Inner classes]
