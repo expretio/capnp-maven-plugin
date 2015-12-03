@@ -239,7 +239,7 @@ public class CapnpCompiler
 
         public Builder addSchemas(Collection<File> schemas)
         {
-            schemas.addAll(schemas);
+            this.schemas.addAll(schemas);
 
             return this;
         }

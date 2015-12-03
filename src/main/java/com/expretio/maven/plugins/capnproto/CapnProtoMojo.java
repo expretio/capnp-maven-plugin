@@ -60,12 +60,26 @@ public class CapnProtoMojo
     @Parameter(defaultValue = "target/generated-sources", required = true)
     private File outputDirectory;
 
-    @Parameter(defaultValue = "src/main/schema")
+    /**
+     * Base directory of definition schemas.
+     */
+    @Parameter(defaultValue = "src/main/schema", required = true)
     private File schemaBaseDirectory;
 
+    /**
+     * File extension of definition schemas.
+     */
     @Parameter(defaultValue = "capnp")
     private String schemaFileExtension;
 
+    /**
+     * Explicitly specified definition schema files. If none, all files matching <code>schemaFileExtension<code> under
+     * <code>schemaBaseDirectory<code> will be compiled. Files must be specified relatively from
+     * <code>schemaBaseDirectory<code>.
+     *
+     * @see #schemaFileExtension
+     * @see #schemaBaseDirectory
+     */
     @Parameter
     private List schemas;
 
