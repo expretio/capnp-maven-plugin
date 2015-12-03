@@ -12,9 +12,10 @@ public class CapnpCompilerTest
 {
     private File outputDirectory = new File("target/capnpCompilerTest");
     private File schemaBaseDirectory = new File("src/test/resources/schema");
-    private File alternativeSchema = new File("com/expretio/appia/demand/alternative/alternative.capnp");
-    private File terminalSchema = new File("com/expretio/appia/demand/alternative/terminal.capnp");
-    private File preferenceListSchema = new File("com/expretio/appia/demand/profile/preference_list.capnp");
+
+    private String alternativeSchema = "com/expretio/appia/demand/alternative/alternative.capnp";
+    private String terminalSchema = "com/expretio/appia/demand/alternative/terminal.capnp";
+    private String preferenceListSchema = "com/expretio/appia/demand/profile/preference_list.capnp";
 
     @Test
     public void test() throws MojoFailureException, MojoExecutionException

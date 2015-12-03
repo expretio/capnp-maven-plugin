@@ -19,6 +19,7 @@ package com.expretio.maven.plugins.capnproto;
 import static org.apache.commons.io.filefilter.FileFilterUtils.*;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -106,37 +107,39 @@ public class CapnProtoMojo
 
     // [Utility methods]
 
-    private Collection<File> getSchemas()
+    private Collection<String> getSchemas()
     {
         if (schemas == null)
         {
             return getAllSchemas();
         }
 
-        return toFiles(schemas);
+        return Arrays.asList(schemas);
     }
 
-    private Collection<File> getAllSchemas()
+    private Collection<String> getAllSchemas()
     {
+        List<String> allSchemas = Lists.newArrayList();
+
         IOFileFilter extensionFilter = suffixFileFilter("." + schemaFileExtension);
         IOFileFilter fileFilter = fileFileFilter();
         IOFileFilter filter = and(extensionFilter, fileFilter);
 
-        return FileUtils.listFiles(schemaBaseDirectory, filter, TrueFileFilter.INSTANCE);
-    }
+        Collection<File> files = FileUtils.listFiles(schemaBaseDirectory, filter, TrueFileFilter.INSTANCE);
 
-    private Collection<File> toFiles(String[] schemas)
-    {
-        List<File> files = Lists.newArrayList();
-
-        for (String schema : schemas)
+        for (File file : files)
         {
-            files.add(new File(schema));
+            allSchemas.add(removeBaseDirectory(file));
         }
 
-        return files;
+        return allSchemas;
     }
 
+    private String removeBaseDirectory(File file)
+    {
+        String prefix = schemaBaseDirectory.getAbsolutePath() + "/";
+        return file.getAbsolutePath().replaceFirst(prefix, "");
+    }
 }
 
 

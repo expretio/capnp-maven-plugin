@@ -23,12 +23,12 @@ public class CapnpCompiler
     }
 
     private Command command;
-    private List<File> schemas;
+    private List<String> schemas;
 
     /**
      * Constructor.
      */
-    private CapnpCompiler(File outputDir, File schemaBaseDir, List<File> importDirs, List<File> schemas)
+    private CapnpCompiler(File outputDir, File schemaBaseDir, List<File> importDirs, List<String> schemas)
         throws MojoExecutionException, MojoFailureException
     {
         this.command = new Command(outputDir, schemaBaseDir, importDirs);
@@ -37,7 +37,7 @@ public class CapnpCompiler
 
     public void compile() throws MojoExecutionException
     {
-        for (File schema : schemas)
+        for (String schema : schemas)
         {
             compile(schema);
         }
@@ -45,7 +45,7 @@ public class CapnpCompiler
 
     // [Utility methods]
 
-    private void compile(File schema) throws MojoExecutionException
+    private void compile(String schema) throws MojoExecutionException
     {
         try
         {
@@ -90,10 +90,10 @@ public class CapnpCompiler
             initialize();
         }
 
-        public List<String> get(File schema)
+        public List<String> get(String schema)
         {
             List<String> fullCommand = Lists.newArrayList(base);
-            fullCommand.add(schema.getPath());
+            fullCommand.add(schema);
 
             return fullCommand;
         }
@@ -126,7 +126,7 @@ public class CapnpCompiler
         private File outputDirectory;
         private File schemaBaseDirectory;
         private List<File> importDirectories = Lists.newArrayList();
-        private List<File> schemas = Lists.newArrayList();
+        private List<String> schemas = Lists.newArrayList();
 
         public CapnpCompiler build() throws MojoExecutionException, MojoFailureException
         {
@@ -163,14 +163,14 @@ public class CapnpCompiler
             return this;
         }
 
-        public Builder addSchema(File schema)
+        public Builder addSchema(String schema)
         {
             schemas.add(schema);
 
             return this;
         }
 
-        public Builder addSchemas(Collection<File> schemas)
+        public Builder addSchemas(Collection<String> schemas)
         {
             this.schemas.addAll(schemas);
 
