@@ -79,6 +79,7 @@ public class ResourceProvider
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
         File file = new File(getTempDirectory(), name);
+        file.deleteOnExit();
 
         try(OutputStream os = new FileOutputStream(file);
             InputStream is = cl.getResourceAsStream(name);)
@@ -86,7 +87,6 @@ public class ResourceProvider
             IOUtils.copy(is, os);
 
             file.setExecutable(true);
-            file.deleteOnExit();
         }
         catch(IOException ioe)
         {

@@ -39,7 +39,7 @@ import com.google.common.collect.Lists;
 
 @Mojo(
         name = "generate",
-        defaultPhase = LifecyclePhase.GENERATE_RESOURCES,
+        defaultPhase = LifecyclePhase.GENERATE_SOURCES,
         threadSafe = true,
         requiresProject = true,
         requiresOnline = false
@@ -59,7 +59,7 @@ public class CapnProtoMojo
     /**
      * Output directory of generated java classes.
      */
-    @Parameter(defaultValue = "target/generated-sources", required = true)
+    @Parameter(defaultValue = "${project.build.directory}/generated-sources/capnp", required = true)
     private File outputDirectory;
 
     /**
@@ -96,6 +96,8 @@ public class CapnProtoMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
+        mavenProject.addCompileSourceRoot(outputDirectory.getAbsolutePath());
+
         CapnpCompiler compiler = CapnpCompiler.builder()
             .setOutputDirectory(outputDirectory)
             .setSchemaBaseDirectory(schemaBaseDirectory)
