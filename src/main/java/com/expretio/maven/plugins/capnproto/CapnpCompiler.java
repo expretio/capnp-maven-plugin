@@ -1,15 +1,10 @@
 package com.expretio.maven.plugins.capnproto;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
@@ -27,26 +22,17 @@ public class CapnpCompiler
         return new Builder();
     }
 
-    private ResourceProvider resources = ResourceProvider.create();
-
-    private File outputDirectory;
-    private File schemaBaseDirectory;
-    private List<File> importDirectories;
+    private Command command;
     private List<File> schemas;
 
     /**
      * Constructor.
      */
     private CapnpCompiler(File outputDir, File schemaBaseDir, List<File> importDirs, List<File> schemas)
-        throws MojoFailureException
+        throws MojoExecutionException, MojoFailureException
     {
-        this.outputDirectory = outputDir;
-        this.schemaBaseDirectory = schemaBaseDir;
-        this.importDirectories = importDirs;
+        this.command = new Command(outputDir, schemaBaseDir, importDirs);
         this.schemas = schemas;
-
-        validate();
-        initialize();
     }
 
     public void compile() throws MojoExecutionException
@@ -61,12 +47,10 @@ public class CapnpCompiler
 
     private void compile(File schema) throws MojoExecutionException
     {
-        List<String> command = createCommand(schema);
-
         try
         {
-            ProcessBuilder processBuilder = new ProcessBuilder(command)
-                .directory(schemaBaseDirectory)
+            ProcessBuilder processBuilder = new ProcessBuilder(command.get(schema))
+                .directory(command.schemaBaseDirectory)
                 .inheritIO();
 
             Process process = processBuilder.start();
@@ -84,111 +68,58 @@ public class CapnpCompiler
         }
     }
 
-    private List<String> createCommand(File schema) throws MojoExecutionException
-    {
-        List<String> command = Lists.newArrayList();
-
-        command.add(getBaseCommand());
-        command.add("compile");
-        command.add("--verbose");
-        command.add("-o" + resources.getCapnpcJava().getAbsolutePath() + ":" + outputDirectory.getAbsolutePath());
-
-        for (File importDirectory : importDirectories)
-        {
-            command.add("-I" + importDirectory.getAbsolutePath());
-        }
-
-        command.add(schema.getPath());
-
-        return command;
-    }
-
-    private String getBaseCommand() throws MojoExecutionException
-    {
-        File file = createTempFile();
-
-        try(OutputStream os = new FileOutputStream(file);
-            InputStream is = new FileInputStream(resources.getCapnp());)
-        {
-            IOUtils.copy(is, os);
-        }
-        catch(IOException ioe)
-        {
-            throw new MojoExecutionException("Cannot copy program file:" + ioe.getMessage());
-        }
-
-        return file.getAbsolutePath();
-    }
-
-    private File createTempFile() throws MojoExecutionException
-    {
-        try
-        {
-            File file = File.createTempFile("capnp", ".bin");
-            file.setExecutable(true);
-            file.deleteOnExit();
-
-            return file;
-        }
-        catch(IOException ioe)
-        {
-            throw new MojoExecutionException("Cannot create temporary file: " + ioe.getMessage());
-        }
-    }
-
-    private void validate()
-        throws MojoFailureException
-    {
-        if (outputDirectory == null)
-        {
-            throw new MojoFailureException("Output directory must be specified.");
-        }
-
-        if (outputDirectory.isFile())
-        {
-            throw new MojoFailureException("Output directory must not be a file.");
-        }
-
-        if (schemaBaseDirectory == null)
-        {
-            throw new MojoFailureException("Schema base directory must be specified.");
-        }
-
-        if (schemaBaseDirectory.isFile())
-        {
-            throw new MojoFailureException("Schema base directory must not be a file.");
-        }
-
-        for (File importDirectory : importDirectories)
-        {
-            if (importDirectory.isFile())
-            {
-                throw new MojoFailureException("Import directory must not be a file: " + importDirectory);
-            }
-        }
-
-        if (schemas.isEmpty())
-        {
-            throw new MojoFailureException("At least one schema file must be specified.");
-        }
-
-        for (File schema : schemas)
-        {
-            if (schema.isDirectory())
-            {
-                throw new MojoFailureException("Schema file must not be a directory: " + schema);
-            }
-        }
-    }
-
-    private void initialize()
-    {
-        outputDirectory.mkdirs();
-        importDirectories.add(resources.getJavaSchemaDirectory());
-        importDirectories.add(schemaBaseDirectory);
-    }
-
     // [Inner classes]
+
+    private static class Command
+    {
+        private ResourceProvider resources = ResourceProvider.create();
+
+        private File outputDirectory;
+        private File schemaBaseDirectory;
+        private List<File> importDirectories;
+
+        private List<String> base = Lists.newArrayList();
+
+        public Command(File outputDir, File schemaBaseDir, List<File> importDirs)
+            throws MojoExecutionException, MojoFailureException
+        {
+            this.outputDirectory = outputDir;
+            this.schemaBaseDirectory = schemaBaseDir;
+            this.importDirectories = importDirs;
+
+            initialize();
+        }
+
+        public List<String> get(File schema)
+        {
+            List<String> fullCommand = Lists.newArrayList(base);
+            fullCommand.add(schema.getPath());
+
+            return fullCommand;
+        }
+
+        private void initialize() throws MojoExecutionException
+        {
+            outputDirectory.mkdirs();
+            importDirectories.add(resources.getJavaSchema().getParentFile());
+            importDirectories.add(schemaBaseDirectory);
+
+            setBase();
+        }
+
+        private void setBase() throws MojoExecutionException
+        {
+            base.add(resources.getCapnp().getAbsolutePath());
+            base.add("compile");
+            base.add("--verbose");
+            base.add("-o" + resources.getCapnpcJava().getAbsolutePath() + ":" + outputDirectory.getAbsolutePath());
+
+            for (File importDirectory : importDirectories)
+            {
+                base.add("-I" + importDirectory.getAbsolutePath());
+            }
+        }
+    }
 
     public static class Builder
     {
@@ -197,8 +128,10 @@ public class CapnpCompiler
         private List<File> importDirectories = Lists.newArrayList();
         private List<File> schemas = Lists.newArrayList();
 
-        public CapnpCompiler build() throws MojoFailureException
+        public CapnpCompiler build() throws MojoExecutionException, MojoFailureException
         {
+            validate();
+
             return new CapnpCompiler(outputDirectory, schemaBaseDirectory, importDirectories, schemas);
         }
 
@@ -242,6 +175,43 @@ public class CapnpCompiler
             this.schemas.addAll(schemas);
 
             return this;
+        }
+
+        private void validate()
+            throws MojoFailureException
+        {
+            if (outputDirectory == null)
+            {
+                throw new MojoFailureException("Output directory must be specified.");
+            }
+
+            if (outputDirectory.isFile())
+            {
+                throw new MojoFailureException("Output directory must not be a file.");
+            }
+
+            if (schemaBaseDirectory == null)
+            {
+                throw new MojoFailureException("Schema base directory must be specified.");
+            }
+
+            if (schemaBaseDirectory.isFile())
+            {
+                throw new MojoFailureException("Schema base directory must not be a file.");
+            }
+
+            for (File importDirectory : importDirectories)
+            {
+                if (importDirectory.isFile())
+                {
+                    throw new MojoFailureException("Import directory must not be a file: " + importDirectory);
+                }
+            }
+
+            if (schemas.isEmpty())
+            {
+                throw new MojoFailureException("At least one schema file must be specified.");
+            }
         }
     }
 

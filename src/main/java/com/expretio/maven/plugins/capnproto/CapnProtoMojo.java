@@ -22,7 +22,6 @@ import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
@@ -34,6 +33,8 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+
+import com.google.common.collect.Lists;
 
 @Mojo(
         name = "generate",
@@ -80,8 +81,8 @@ public class CapnProtoMojo
      * @see #schemaFileExtension
      * @see #schemaBaseDirectory
      */
-    @Parameter
-    private List schemas;
+    @Parameter()
+    private String[] schemas;
 
 // FIXME:
 //    @Parameter
@@ -107,12 +108,12 @@ public class CapnProtoMojo
 
     private Collection<File> getSchemas()
     {
-        if (CollectionUtils.isEmpty(schemas))
+        if (schemas == null)
         {
             return getAllSchemas();
         }
 
-        return schemas;
+        return toFiles(schemas);
     }
 
     private Collection<File> getAllSchemas()
@@ -124,4 +125,18 @@ public class CapnProtoMojo
         return FileUtils.listFiles(schemaBaseDirectory, filter, TrueFileFilter.INSTANCE);
     }
 
+    private Collection<File> toFiles(String[] schemas)
+    {
+        List<File> files = Lists.newArrayList();
+
+        for (String schema : schemas)
+        {
+            files.add(new File(schema));
+        }
+
+        return files;
+    }
+
 }
+
+
