@@ -6,7 +6,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.junit.Test;
 
-import com.expretio.maven.plugins.capnproto.CapnpCompiler;
+import com.expretio.maven.plugins.capnp.CapnpCompiler;
 
 public class CapnpCompilerTest
 {

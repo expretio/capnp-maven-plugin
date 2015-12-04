@@ -1,4 +1,4 @@
-package com.expretio.maven.plugins.capnproto;
+package com.expretio.maven.plugins.capnp;
 
 import java.io.File;
 import java.io.IOException;

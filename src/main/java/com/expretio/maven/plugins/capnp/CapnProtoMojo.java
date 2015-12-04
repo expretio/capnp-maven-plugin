@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.expretio.maven.plugins.capnproto;
+package com.expretio.maven.plugins.capnp;
 
 import static org.apache.commons.io.FileUtils.*;
 import static org.apache.commons.io.filefilter.FileFilterUtils.*;

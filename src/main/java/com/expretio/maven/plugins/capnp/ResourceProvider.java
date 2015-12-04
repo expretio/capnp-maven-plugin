@@ -1,18 +1,22 @@
-package com.expretio.maven.plugins.capnproto;
+package com.expretio.maven.plugins.capnp;
+
+import static com.google.common.io.Files.*;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.apache.commons.io.IOUtils;
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Resources;
 
 /**
  * Capnproto resource provider.
  */
 public class ResourceProvider
 {
+    private static final String RESOURCE_PATH = ResourceProvider.class.getPackage().getName().replace('.', '/') + '/';
+
     private static final String CAPNP = "capnp";
     private static final String CAPNPC_JAVA = "capnpc-java";
     private static final String JAVA_SCHEMA = "java.capnp";
@@ -80,18 +84,18 @@ public class ResourceProvider
     protected File getResource(String name)
         throws IOException
     {
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        File destFile = new File(workDirectory, name);
 
-        File file = new File(workDirectory, name);
-
-        try(OutputStream os = new FileOutputStream(file);
-            InputStream is = cl.getResourceAsStream(name);)
+        try (
+            OutputStream os = asByteSink(destFile).openBufferedStream();
+            InputStream is = Resources.getResource(RESOURCE_PATH + name).openStream();
+        )
         {
-            IOUtils.copy(is, os);
+            ByteStreams.copy(is, os);
 
-            file.setExecutable(true);
+            destFile.setExecutable(true);
         }
 
-        return file;
+        return destFile;
     }
 }
