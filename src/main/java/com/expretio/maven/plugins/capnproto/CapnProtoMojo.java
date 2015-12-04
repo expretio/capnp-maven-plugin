@@ -65,8 +65,14 @@ public class CapnProtoMojo
     /**
      * Base directory of definition schemas.
      */
-    @Parameter(defaultValue = "src/main/schema", required = true)
+    @Parameter(defaultValue = "src/main/capnp/schema", required = true)
     private File schemaBaseDirectory;
+
+    /**
+     * Compilation process working directory.
+     */
+    @Parameter(defaultValue = "${project.build.directory}/capnp-work", required = true)
+    private File workDirectory;
 
     /**
      * File extension of definition schemas.
@@ -101,7 +107,9 @@ public class CapnProtoMojo
         CapnpCompiler compiler = CapnpCompiler.builder()
             .setOutputDirectory(outputDirectory)
             .setSchemaBaseDirectory(schemaBaseDirectory)
+            .setWorkDirectory(workDirectory)
             .addSchemas(getSchemas())
+            .setVerbose(verbose)
             .build();
 
         compiler.compile();

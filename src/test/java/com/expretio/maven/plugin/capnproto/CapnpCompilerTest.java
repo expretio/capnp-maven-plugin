@@ -10,8 +10,9 @@ import com.expretio.maven.plugins.capnproto.CapnpCompiler;
 
 public class CapnpCompilerTest
 {
-    private File outputDirectory = new File("target/capnpCompilerTest");
+    private File outputDirectory = new File("target/capnpCompilerTest/output");
     private File schemaBaseDirectory = new File("src/test/resources/schema");
+    private File workDirectory = new File("target/capnpCompilerTest/work");
 
     private String alternativeSchema = "com/expretio/appia/demand/alternative/alternative.capnp";
     private String terminalSchema = "com/expretio/appia/demand/alternative/terminal.capnp";
@@ -23,6 +24,7 @@ public class CapnpCompilerTest
         CapnpCompiler compiler = CapnpCompiler.builder()
             .setOutputDirectory(outputDirectory)
             .setSchemaBaseDirectory(schemaBaseDirectory)
+            .setWorkDirectory(workDirectory)
             .addSchema(alternativeSchema)
             .addSchema(terminalSchema)
             .addSchema(preferenceListSchema)

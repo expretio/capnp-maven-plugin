@@ -9,8 +9,6 @@ import java.io.OutputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 
-import com.google.common.io.Files;
-
 
 /**
  * Capnproto resource provider.
@@ -21,17 +19,23 @@ public class ResourceProvider
     private static final String CAPNPC_JAVA = "capnpc-java";
     private static final String JAVA_SCHEMA = "java.capnp";
 
-    public static ResourceProvider create()
+    public static ResourceProvider create(File workDirectory)
     {
-        return new ResourceProvider();
+        return new ResourceProvider(workDirectory);
     }
 
-    private File tempDirectory;
+    private File workDirectory;
     private File capnp;
     private File capnpcJava;
     private File javaSchema;
 
-    private ResourceProvider(){}
+    /**
+     * Constructor.
+     */
+    private ResourceProvider(File workDirectory)
+    {
+        this.workDirectory = workDirectory;
+    }
 
     /**
      * Provides capnproto program.
@@ -78,8 +82,7 @@ public class ResourceProvider
     {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
-        File file = new File(getTempDirectory(), name);
-        file.deleteOnExit();
+        File file = new File(workDirectory, name);
 
         try(OutputStream os = new FileOutputStream(file);
             InputStream is = cl.getResourceAsStream(name);)
@@ -94,16 +97,5 @@ public class ResourceProvider
         }
 
         return file;
-    }
-
-    private File getTempDirectory() throws MojoExecutionException
-    {
-        if (tempDirectory == null)
-        {
-            tempDirectory = Files.createTempDir();
-            tempDirectory.deleteOnExit();
-        }
-
-        return tempDirectory;
     }
 }
