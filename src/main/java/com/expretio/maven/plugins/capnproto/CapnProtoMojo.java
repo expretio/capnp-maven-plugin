@@ -19,6 +19,7 @@ package com.expretio.maven.plugins.capnproto;
 import static org.apache.commons.io.filefilter.FileFilterUtils.*;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -129,26 +130,26 @@ public class CapnProtoMojo
 
     private Collection<String> getAllSchemas()
     {
-        List<String> allSchemas = Lists.newArrayList();
-
         IOFileFilter extensionFilter = suffixFileFilter("." + schemaFileExtension);
         IOFileFilter fileFilter = fileFileFilter();
         IOFileFilter filter = and(extensionFilter, fileFilter);
 
         Collection<File> files = FileUtils.listFiles(schemaBaseDirectory, filter, TrueFileFilter.INSTANCE);
 
-        for (File file : files)
-        {
-            allSchemas.add(removeBaseDirectory(file));
-        }
-
-        return allSchemas;
+        return relativize(files);
     }
 
-    private String removeBaseDirectory(File file)
+    private Collection<String> relativize(Collection<File> files)
     {
-        String prefix = schemaBaseDirectory.getAbsolutePath() + "/";
-        return file.getAbsolutePath().replaceFirst(prefix, "");
+        List<String> paths = Lists.newArrayList();
+
+        for (File file : files)
+        {
+            Path path = schemaBaseDirectory.toPath().relativize(file.toPath());
+            paths.add(path.toString());
+        }
+
+        return paths;
     }
 }
 
