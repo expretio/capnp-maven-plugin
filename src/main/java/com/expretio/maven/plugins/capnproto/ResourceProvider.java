@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.maven.plugin.MojoExecutionException;
-
 
 /**
  * Capnproto resource provider.
@@ -40,7 +38,8 @@ public class ResourceProvider
     /**
      * Provides capnproto program.
      */
-    public File getCapnp() throws MojoExecutionException
+    public File getCapnp()
+        throws IOException
     {
         if (capnp == null)
         {
@@ -53,7 +52,8 @@ public class ResourceProvider
     /**
      * Provides capnproto java plugin.
      */
-    public File getCapnpcJava() throws MojoExecutionException
+    public File getCapnpcJava()
+        throws IOException
     {
         if (capnpcJava == null)
         {
@@ -66,7 +66,8 @@ public class ResourceProvider
     /**
      * Provides java schema.
      */
-    public File getJavaSchema() throws MojoExecutionException
+    public File getJavaSchema()
+        throws IOException
     {
         if (javaSchema == null)
         {
@@ -76,9 +77,8 @@ public class ResourceProvider
         return javaSchema;
     }
 
-    // [Utility methods]
-
-    public File getResource(String name) throws MojoExecutionException
+    protected File getResource(String name)
+        throws IOException
     {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
@@ -90,10 +90,6 @@ public class ResourceProvider
             IOUtils.copy(is, os);
 
             file.setExecutable(true);
-        }
-        catch(IOException ioe)
-        {
-            throw new MojoExecutionException("Cannot copy program file:" + ioe.getMessage());
         }
 
         return file;

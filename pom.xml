@@ -13,10 +13,10 @@
     </parent>
 
     <groupId>com.expretio.maven.plugins</groupId>
-    <artifactId>capnproto-maven-plugin</artifactId>
+    <artifactId>capnp-maven-plugin</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>capnproto-maven-plugin</name>
+    <name>capnp-maven-plugin</name>
 
     <packaging>maven-plugin</packaging>
 
@@ -40,7 +40,6 @@
 
         <guava.version>18.0</guava.version>
         <commons-io.version>2.4</commons-io.version>
-        <commons-collections.version>3.2.1</commons-collections.version>
     </properties>
 
     <build>
@@ -100,10 +99,6 @@
                     <detail>true</detail>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-            </plugin>
         </plugins>
     </build>
 
@@ -133,11 +128,6 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons-io.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>${commons-collections.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.plugin-testing</groupId>

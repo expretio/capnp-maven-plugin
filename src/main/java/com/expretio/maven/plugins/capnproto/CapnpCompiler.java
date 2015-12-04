@@ -53,10 +53,14 @@ public class CapnpCompiler
     {
         try
         {
-            ProcessBuilder processBuilder = new ProcessBuilder(command.get(schema))
-                .directory(command.workDirectory);
+            ProcessBuilder processBuilder =
+                    new ProcessBuilder(command.get(schema))
+                        .directory(command.workDirectory);
 
-            if (verbose) processBuilder.inheritIO();
+            if (verbose)
+            {
+                processBuilder.inheritIO();
+            }
 
             Process process = processBuilder.start();
 
@@ -67,7 +71,7 @@ public class CapnpCompiler
                 throw new MojoExecutionException("Unexpected exit value (" + exit + ") while compiling " + schema);
             }
         }
-        catch(IOException | InterruptedException e)
+        catch (IOException | InterruptedException e)
         {
             throw new MojoExecutionException("Cannot compile schema " + schema + ": " + e.getMessage());
         }
@@ -86,7 +90,11 @@ public class CapnpCompiler
 
         private List<String> base = Lists.newArrayList();
 
-        public Command(File outputDirectory, File schemaBaseDirectory, File workDirectory, List<File> importDirectories)
+        public Command(
+                File outputDirectory,
+                File schemaBaseDirectory,
+                File workDirectory,
+                List<File> importDirectories)
             throws MojoExecutionException, MojoFailureException
         {
             this.resources = ResourceProvider.create(workDirectory);
@@ -110,29 +118,31 @@ public class CapnpCompiler
             throws MojoExecutionException
         {
             outputDirectory.mkdirs();
-            copySources();
 
-            importDirectories.add(resources.getJavaSchema().getParentFile());
-            importDirectories.add(schemaBaseDirectory);
+            try
+            {
+                copySources();
 
-            setBase();
+                importDirectories.add(resources.getJavaSchema().getParentFile());
+                importDirectories.add(schemaBaseDirectory);
+
+                setBase();
+            }
+            catch (Exception e)
+            {
+                throw new MojoExecutionException("Unable to initialize capnp environment.", e);
+            }
+
         }
 
         private void copySources()
-            throws MojoExecutionException
+            throws IOException
         {
-            try
-            {
-                FileUtils.copyDirectory(schemaBaseDirectory, workDirectory);
-            }
-            catch (IOException e)
-            {
-                throw new MojoExecutionException("Cannot copy sources into working directory: " + e.getMessage());
-            }
+            FileUtils.copyDirectory(schemaBaseDirectory, workDirectory);
         }
 
         private void setBase()
-            throws MojoExecutionException
+            throws IOException
         {
             base.add(resources.getCapnp().getAbsolutePath());
             base.add("compile");
@@ -151,8 +161,8 @@ public class CapnpCompiler
         private File outputDirectory;
         private File schemaBaseDirectory;
         private File workDirectory;
-        private List<File> importDirectories = Lists.newArrayList();
-        private List<String> schemas = Lists.newArrayList();
+        private final List<File> importDirectories = Lists.newArrayList();
+        private final List<String> schemas = Lists.newArrayList();
         private boolean verbose = true;
 
         public CapnpCompiler build()
@@ -253,5 +263,4 @@ public class CapnpCompiler
             }
         }
     }
-
 }

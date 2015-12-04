@@ -16,18 +16,16 @@
  */
 package com.expretio.maven.plugins.capnproto;
 
+import static org.apache.commons.io.FileUtils.*;
 import static org.apache.commons.io.filefilter.FileFilterUtils.*;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -50,9 +48,6 @@ public class CapnProtoMojo
 {
     @Parameter(defaultValue = "${project}", readonly = true)
     private MavenProject mavenProject;
-
-    @Parameter(defaultValue = "${session}", readonly = true)
-    private MavenSession mavenSession;
 
     @Parameter(defaultValue = "false")
     private boolean verbose;
@@ -130,11 +125,13 @@ public class CapnProtoMojo
 
     private Collection<String> getAllSchemas()
     {
-        IOFileFilter extensionFilter = suffixFileFilter("." + schemaFileExtension);
-        IOFileFilter fileFilter = fileFileFilter();
-        IOFileFilter filter = and(extensionFilter, fileFilter);
+        IOFileFilter filter =
+            and(
+                suffixFileFilter("." + schemaFileExtension),
+                fileFileFilter()
+            );
 
-        Collection<File> files = FileUtils.listFiles(schemaBaseDirectory, filter, TrueFileFilter.INSTANCE);
+        Collection<File> files = listFiles(schemaBaseDirectory, filter, TrueFileFilter.INSTANCE);
 
         return relativize(files);
     }
@@ -145,12 +142,11 @@ public class CapnProtoMojo
 
         for (File file : files)
         {
-            Path path = schemaBaseDirectory.toPath().relativize(file.toPath());
-            paths.add(path.toString());
+            paths.add(
+                schemaBaseDirectory.toPath().relativize(file.toPath()).toString()
+            );
         }
 
         return paths;
     }
 }
-
-
