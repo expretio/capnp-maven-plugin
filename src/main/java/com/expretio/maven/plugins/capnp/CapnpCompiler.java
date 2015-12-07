@@ -203,9 +203,9 @@ public class CapnpCompiler
             return this;
         }
 
-        public Builder addImportDirectory(Collection<File> importDirectories)
+        public Builder addImportDirectories(Collection<File> importDirectories)
         {
-            importDirectories.addAll(importDirectories);
+            this.importDirectories.addAll(importDirectories);
 
             return this;
         }

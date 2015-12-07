@@ -22,6 +22,7 @@ import static org.apache.commons.io.filefilter.FileFilterUtils.*;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.filefilter.IOFileFilter;
@@ -49,7 +50,7 @@ public class CapnProtoMojo
     @Parameter(defaultValue = "${project}", readonly = true)
     private MavenProject mavenProject;
 
-    @Parameter(defaultValue = "false")
+    @Parameter(defaultValue = "true")
     private boolean verbose;
 
     /**
@@ -87,12 +88,13 @@ public class CapnProtoMojo
     @Parameter()
     private String[] schemas;
 
-// FIXME:
-//    @Parameter
-//    private File importDirectory;
-//
-//    @Parameter
-//    private List importDirectories;
+    /**
+     * Supplementary import directories. Note that schemaBaseDirectory is already considered as an import directory.
+     *
+     * @see #schemaBaseDirectory
+     */
+    @Parameter
+    private File[] importDirectories;
 
     @Override
     public void execute()
@@ -105,6 +107,7 @@ public class CapnProtoMojo
             .setSchemaBaseDirectory(schemaBaseDirectory)
             .setWorkDirectory(workDirectory)
             .addSchemas(getSchemas())
+            .addImportDirectories(getImportDirectories())
             .setVerbose(verbose)
             .build();
 
@@ -148,5 +151,15 @@ public class CapnProtoMojo
         }
 
         return paths;
+    }
+
+    private Collection<File> getImportDirectories()
+    {
+        if (importDirectories == null)
+        {
+            return Collections.EMPTY_LIST;
+        }
+
+        return Arrays.asList(importDirectories);
     }
 }
