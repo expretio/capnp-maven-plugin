@@ -1,4 +1,4 @@
-package com.expretio.maven.plugin.capnproto;
+package com.expretio.maven.plugin.capnp;
 
 import java.io.File;
 
@@ -14,23 +14,27 @@ public class CapnpCompilerTest
     private File schemaBaseDirectory = new File("src/test/resources/schema");
     private File workDirectory = new File("target/capnpCompilerTest/work");
 
-    private String alternativeSchema = "com/expretio/appia/demand/alternative/alternative.capnp";
-    private String terminalSchema = "com/expretio/appia/demand/alternative/terminal.capnp";
-    private String preferenceListSchema = "com/expretio/appia/demand/profile/preference_list.capnp";
+    private String alphaSchema = "com/expretio/maven/plugins/capnp/alpha/alpha.capnp";
+    private String betaSchema = "com/expretio/maven/plugins/capnp/beta/beta.capnp";
 
     @Test
-    public void test() throws MojoFailureException, MojoExecutionException
+    public void compile() throws MojoFailureException, MojoExecutionException
     {
+        // Setting up fixture
         CapnpCompiler compiler = CapnpCompiler.builder()
             .setOutputDirectory(outputDirectory)
             .setSchemaBaseDirectory(schemaBaseDirectory)
             .setWorkDirectory(workDirectory)
-            .addSchema(alternativeSchema)
-            .addSchema(terminalSchema)
-            .addSchema(preferenceListSchema)
+            .addSchema(alphaSchema)
+            .addSchema(betaSchema)
             .build();
 
+        // Exercising system under test
         compiler.compile();
+
+        // Verifying outcome
+
     }
+
 
 }
