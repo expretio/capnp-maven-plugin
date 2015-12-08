@@ -11,12 +11,14 @@ import com.expretio.maven.plugins.capnp.CapnpCompiler;
 
 public class CapnpCompilerTest
 {
-    private File outputDirectory = new File("target/capnpCompilerTest/output");
+    private String testBase = "target/capnpCompilerTest";
+    private File outputDirectory = new File(testBase + "/output");
     private File schemaBaseDirectory = new File("src/test/resources/schema");
-    private File workDirectory = new File("target/capnpCompilerTest/work");
+    private File workDirectory = new File(testBase + "/work");
 
-    private String alphaSchema = "com/expretio/maven/plugins/capnp/alpha/alpha.capnp";
-    private String betaSchema = "com/expretio/maven/plugins/capnp/beta/beta.capnp";
+    private String packageBase = "com/expretio/maven/plugins/capnp";
+    private String alphaSchema = packageBase + "/alpha/alpha.capnp";
+    private String betaSchema = packageBase + "/beta/beta.capnp";
 
     @Test
     public void compile() throws MojoFailureException, MojoExecutionException
@@ -35,15 +37,15 @@ public class CapnpCompilerTest
 
         // Verifying outcome
         assertThat(workDirectory)
-            .contains("com/expretio/maven/plugins/capnp/alpha/alpha.capnp")
-            .contains("com/expretio/maven/plugins/capnp/beta/beta.capnp")
+            .contains(packageBase + "/alpha/alpha.capnp")
+            .contains(packageBase + "/beta/beta.capnp")
             .contains("capnp")
             .contains("capnpc-java")
             .contains("java.capnp");
 
         assertThat(outputDirectory)
-            .contains("com/expretio/maven/plugins/capnp/alpha/AlphaCapnp.java")
-            .contains("com/expretio/maven/plugins/capnp/beta/BetaCapnp.java");
+            .contains(packageBase + "/alpha/AlphaCapnp.java")
+            .contains(packageBase + "/beta/BetaCapnp.java");
     }
 
     @Test(expected = MojoFailureException.class)
@@ -123,8 +125,11 @@ public class CapnpCompilerTest
 
         public DirectoryAssert contains(String filename)
         {
-            Assertions.assertThat(
-                new File(directory, filename)).exists();
+            File file = new File(directory, filename);
+
+            Assertions.assertThat(file).exists();
+            Assertions.assertThat(file).isFile();
+            Assertions.assertThat(file.length()).isPositive();
 
             return this;
         }
