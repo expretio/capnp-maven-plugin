@@ -2,14 +2,13 @@ package com.expretio.maven.plugins.capnp;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-
-import com.google.common.collect.Lists;
 
 /**
  * Implements a java adapter of capnproto compiler, creating java classes from schema definitions.
@@ -88,7 +87,7 @@ public class CapnpCompiler
         private File workDirectory;
         private List<File> importDirectories;
 
-        private List<String> base = Lists.newArrayList();
+        private List<String> base = new ArrayList<String>();
 
         public Command(
                 File outputDirectory,
@@ -108,7 +107,7 @@ public class CapnpCompiler
 
         public List<String> get(String schema)
         {
-            List<String> fullCommand = Lists.newArrayList(base);
+            List<String> fullCommand = new ArrayList<String>(base);
             fullCommand.add(schema);
 
             return fullCommand;
@@ -161,8 +160,8 @@ public class CapnpCompiler
         private File outputDirectory;
         private File schemaBaseDirectory;
         private File workDirectory;
-        private final List<File> importDirectories = Lists.newArrayList();
-        private final List<String> schemas = Lists.newArrayList();
+        private final List<File> importDirectories = new ArrayList<File>();
+        private final List<String> schemas = new ArrayList<String>();
         private boolean verbose = true;
 
         public CapnpCompiler build()

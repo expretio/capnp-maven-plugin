@@ -38,7 +38,6 @@
         <maven-plugin-plugin.version>3.4</maven-plugin-plugin.version>
         <maven-plugin-testing-harness.version>3.3.0</maven-plugin-testing-harness.version>
 
-        <guava.version>18.0</guava.version>
         <commons-io.version>2.4</commons-io.version>
     </properties>
 
@@ -121,12 +120,6 @@
             <artifactId>maven-plugin-annotations</artifactId>
             <version>${maven-plugin-plugin.version}</version>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
         </dependency>
 
         <dependency>

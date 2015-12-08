@@ -20,6 +20,7 @@ import static org.apache.commons.io.FileUtils.*;
 import static org.apache.commons.io.filefilter.FileFilterUtils.*;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,8 +35,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-
-import com.google.common.collect.Lists;
 
 @Mojo(
         name = "generate",
@@ -141,7 +140,7 @@ public class CapnProtoMojo
 
     private Collection<String> relativize(Collection<File> files)
     {
-        List<String> paths = Lists.newArrayList();
+        List<String> paths = new ArrayList<String>();
 
         for (File file : files)
         {
