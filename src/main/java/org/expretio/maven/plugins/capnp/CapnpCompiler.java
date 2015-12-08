@@ -109,7 +109,7 @@ public class CapnpCompiler
         private File workDirectory;
         private List<File> importDirectories;
 
-        private List<String> base = new ArrayList<String>();
+        private List<String> base = new ArrayList<>();
 
         public Command(
                 File outputDirectory,
@@ -129,7 +129,7 @@ public class CapnpCompiler
 
         public List<String> get(String schema)
         {
-            List<String> fullCommand = new ArrayList<String>(base);
+            List<String> fullCommand = new ArrayList<>(base);
             fullCommand.add(schema);
 
             return fullCommand;
@@ -176,8 +176,8 @@ public class CapnpCompiler
         private File outputDirectory;
         private File schemaDirectory;
         private File workDirectory;
-        private final List<File> importDirectories = new ArrayList<File>();
-        private final List<String> schemas = new ArrayList<String>();
+        private final List<File> importDirectories = new ArrayList<>();
+        private final List<String> schemas = new ArrayList<>();
         private boolean verbose = true;
 
         public CapnpCompiler build()
