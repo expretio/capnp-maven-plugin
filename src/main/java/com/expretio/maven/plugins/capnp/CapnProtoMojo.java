@@ -84,7 +84,7 @@ public class CapnProtoMojo
      * @see #schemaFileExtension
      * @see #schemaDirectory
      */
-    @Parameter()
+    @Parameter
     private String[] schemas;
 
     /**
