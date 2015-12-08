@@ -21,7 +21,8 @@ public class CapnpCompilerTest
     private String betaSchema = packageBase + "/beta/beta.capnp";
 
     @Test
-    public void compile() throws MojoFailureException, MojoExecutionException
+    public void compile()
+        throws MojoFailureException, MojoExecutionException
     {
         // Setting up fixture
         CapnpCompiler compiler = CapnpCompiler.builder()
@@ -49,7 +50,8 @@ public class CapnpCompilerTest
     }
 
     @Test(expected = MojoFailureException.class)
-    public void withoutOutputDirectory() throws MojoFailureException, MojoExecutionException
+    public void withoutOutputDirectory()
+        throws MojoFailureException, MojoExecutionException
     {
         // Setting up fixture
         CapnpCompiler compiler = CapnpCompiler.builder()
@@ -64,7 +66,8 @@ public class CapnpCompilerTest
     }
 
     @Test(expected = MojoFailureException.class)
-    public void withoutSchemaBaseDirectory() throws MojoFailureException, MojoExecutionException
+    public void withoutSchemaBaseDirectory()
+        throws MojoFailureException, MojoExecutionException
     {
         // Setting up fixture
         CapnpCompiler compiler = CapnpCompiler.builder()
@@ -79,7 +82,8 @@ public class CapnpCompilerTest
     }
 
     @Test(expected = MojoFailureException.class)
-    public void withoutWorkingDirectory() throws MojoFailureException, MojoExecutionException
+    public void withoutWorkingDirectory()
+        throws MojoFailureException, MojoExecutionException
     {
         // Setting up fixture
         CapnpCompiler compiler = CapnpCompiler.builder()
@@ -94,7 +98,8 @@ public class CapnpCompilerTest
     }
 
     @Test(expected = MojoFailureException.class)
-    public void withoutSchema() throws MojoFailureException, MojoExecutionException
+    public void withoutSchema()
+        throws MojoFailureException, MojoExecutionException
     {
         // Setting up fixture
         CapnpCompiler compiler = CapnpCompiler.builder()
