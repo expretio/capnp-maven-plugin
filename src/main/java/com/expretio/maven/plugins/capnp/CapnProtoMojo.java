@@ -88,7 +88,7 @@ public class CapnProtoMojo
     private String[] schemas;
 
     /**
-     * Supplementary import directories. Note that schemaBaseDirectory is already considered as an import directory.
+     * Supplementary import directories. Note: schemaBaseDirectory is implicitly considered as an import directory.
      *
      * @see #schemaBaseDirectory
      */

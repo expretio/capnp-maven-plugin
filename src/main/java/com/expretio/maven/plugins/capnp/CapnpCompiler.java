@@ -72,7 +72,7 @@ public class CapnpCompiler
         }
         catch (IOException | InterruptedException e)
         {
-            throw new MojoExecutionException("Cannot compile schema " + schema + ": " + e.getMessage());
+            throw new MojoExecutionException("Cannot compile schema " + schema + ".", e);
         }
     }
 
@@ -120,24 +120,17 @@ public class CapnpCompiler
 
             try
             {
-                copySources();
+                FileUtils.copyDirectory(schemaBaseDirectory, workDirectory);
 
                 importDirectories.add(resources.getJavaSchema().getParentFile());
                 importDirectories.add(schemaBaseDirectory);
 
                 setBase();
             }
-            catch (Exception e)
+            catch (IOException e)
             {
                 throw new MojoExecutionException("Unable to initialize capnp environment.", e);
             }
-
-        }
-
-        private void copySources()
-            throws IOException
-        {
-            FileUtils.copyDirectory(schemaBaseDirectory, workDirectory);
         }
 
         private void setBase()
