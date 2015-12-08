@@ -14,7 +14,7 @@ public class CapnpCompilerTest
     private String testBase = "target/capnpCompilerTest";
     private File outputDirectory = new File(testBase + "/output");
     private File workDirectory = new File(testBase + "/work");
-    private File schemaBaseDirectory = new File("src/test/resources/schema");
+    private File schemaDirectory = new File("src/test/resources/schema");
 
     private String packageBase = "com/expretio/maven/plugins/capnp";
     private String alphaSchema = packageBase + "/alpha/alpha.capnp";
@@ -27,7 +27,7 @@ public class CapnpCompilerTest
         // Setting up fixture
         CapnpCompiler compiler = CapnpCompiler.builder()
             .setOutputDirectory(outputDirectory)
-            .setSchemaBaseDirectory(schemaBaseDirectory)
+            .setSchemaDirectory(schemaDirectory)
             .setWorkDirectory(workDirectory)
             .addSchema(alphaSchema)
             .addSchema(betaSchema)
@@ -55,7 +55,7 @@ public class CapnpCompilerTest
     {
         // Setting up fixture
         CapnpCompiler compiler = CapnpCompiler.builder()
-            .setSchemaBaseDirectory(schemaBaseDirectory)
+            .setSchemaDirectory(schemaDirectory)
             .setWorkDirectory(workDirectory)
             .addSchema(alphaSchema)
             .addSchema(betaSchema)
@@ -66,7 +66,7 @@ public class CapnpCompilerTest
     }
 
     @Test(expected = MojoFailureException.class)
-    public void withoutSchemaBaseDirectory()
+    public void withoutschemaDirectory()
         throws MojoFailureException, MojoExecutionException
     {
         // Setting up fixture
@@ -88,7 +88,7 @@ public class CapnpCompilerTest
         // Setting up fixture
         CapnpCompiler compiler = CapnpCompiler.builder()
             .setOutputDirectory(outputDirectory)
-            .setSchemaBaseDirectory(schemaBaseDirectory)
+            .setSchemaDirectory(schemaDirectory)
             .addSchema(alphaSchema)
             .addSchema(betaSchema)
             .build();
@@ -104,7 +104,7 @@ public class CapnpCompilerTest
         // Setting up fixture
         CapnpCompiler compiler = CapnpCompiler.builder()
             .setOutputDirectory(outputDirectory)
-            .setSchemaBaseDirectory(schemaBaseDirectory)
+            .setSchemaDirectory(schemaDirectory)
             .setWorkDirectory(workDirectory)
             .build();
 

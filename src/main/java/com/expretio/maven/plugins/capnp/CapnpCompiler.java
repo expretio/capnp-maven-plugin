@@ -83,7 +83,7 @@ public class CapnpCompiler
         private ResourceProvider resources;
 
         private File outputDirectory;
-        private File schemaBaseDirectory;
+        private File schemaDirectory;
         private File workDirectory;
         private List<File> importDirectories;
 
@@ -91,14 +91,14 @@ public class CapnpCompiler
 
         public Command(
                 File outputDirectory,
-                File schemaBaseDirectory,
+                File schemaDirectory,
                 File workDirectory,
                 List<File> importDirectories)
             throws MojoExecutionException, MojoFailureException
         {
             this.resources = ResourceProvider.create(workDirectory);
             this.outputDirectory = outputDirectory;
-            this.schemaBaseDirectory = schemaBaseDirectory;
+            this.schemaDirectory = schemaDirectory;
             this.workDirectory = workDirectory;
             this.importDirectories = importDirectories;
 
@@ -121,10 +121,10 @@ public class CapnpCompiler
 
             try
             {
-                FileUtils.copyDirectoryStructure(schemaBaseDirectory, workDirectory);
+                FileUtils.copyDirectoryStructure(schemaDirectory, workDirectory);
 
                 importDirectories.add(resources.getJavaSchema().getParentFile());
-                importDirectories.add(schemaBaseDirectory);
+                importDirectories.add(schemaDirectory);
 
                 setBase();
             }
@@ -152,7 +152,7 @@ public class CapnpCompiler
     public static class Builder
     {
         private File outputDirectory;
-        private File schemaBaseDirectory;
+        private File schemaDirectory;
         private File workDirectory;
         private final List<File> importDirectories = new ArrayList<File>();
         private final List<String> schemas = new ArrayList<String>();
@@ -163,7 +163,7 @@ public class CapnpCompiler
         {
             validate();
 
-            Command command = new Command(outputDirectory, schemaBaseDirectory, workDirectory, importDirectories);
+            Command command = new Command(outputDirectory, schemaDirectory, workDirectory, importDirectories);
 
             return new CapnpCompiler(command, schemas, verbose);
         }
@@ -175,9 +175,9 @@ public class CapnpCompiler
             return this;
         }
 
-        public Builder setSchemaBaseDirectory(File schemaBaseDirectory)
+        public Builder setSchemaDirectory(File schemaDirectory)
         {
-            this.schemaBaseDirectory = schemaBaseDirectory;
+            this.schemaDirectory = schemaDirectory;
 
             return this;
         }
@@ -228,7 +228,7 @@ public class CapnpCompiler
             throws MojoFailureException
         {
             validate(outputDirectory, "Output directory");
-            validate(schemaBaseDirectory, "Schema base directory");
+            validate(schemaDirectory, "Schema base directory");
             validate(workDirectory, "Working directory");
 
             for (File importDirectory : importDirectories)

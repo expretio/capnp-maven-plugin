@@ -37,11 +37,11 @@ import com.google.common.collect.Lists;
 
 
 @Mojo(
-        name = "generate",
-        defaultPhase = LifecyclePhase.GENERATE_SOURCES,
-        threadSafe = true,
-        requiresProject = true,
-        requiresOnline = false
+    name = "generate",
+    defaultPhase = LifecyclePhase.GENERATE_SOURCES,
+    threadSafe = true,
+    requiresProject = true,
+    requiresOnline = false
 )
 public class CapnProtoMojo
     extends AbstractMojo
@@ -62,7 +62,7 @@ public class CapnProtoMojo
      * Base directory of definition schemas.
      */
     @Parameter(defaultValue = "src/main/capnp/schema", required = true)
-    private File schemaBaseDirectory;
+    private File schemaDirectory;
 
     /**
      * Compilation process working directory.
@@ -78,20 +78,20 @@ public class CapnProtoMojo
 
     /**
      * Explicitly specified definition schema files. If none, all files matching <code>schemaFileExtension<code> under
-     * <code>schemaBaseDirectory<code> will be compiled. Files must be specified relatively from
-     * <code>schemaBaseDirectory<code>.
+     * <code>schemaDirectory<code> will be compiled. Files must be specified relatively from
+     * <code>schemaDirectory<code>.
      *
      * @see #schemaFileExtension
-     * @see #schemaBaseDirectory
+     * @see #schemaDirectory
      */
     @Parameter()
     private String[] schemas;
 
     /**
-     * Supplementary import directories. Note: <code>schemaBaseDirectory</code> is implicitly considered as an import
+     * Supplementary import directories. Note: <code>schemaDirectory</code> is implicitly considered as an import
      * directory.
      *
-     * @see #schemaBaseDirectory
+     * @see #schemaDirectory
      */
     @Parameter
     private File[] importDirectories;
@@ -104,7 +104,7 @@ public class CapnProtoMojo
 
         CapnpCompiler compiler = CapnpCompiler.builder()
             .setOutputDirectory(outputDirectory)
-            .setSchemaBaseDirectory(schemaBaseDirectory)
+            .setSchemaDirectory(schemaDirectory)
             .setWorkDirectory(workDirectory)
             .addSchemas(getSchemas())
             .addImportDirectories(getImportDirectories())
@@ -130,7 +130,7 @@ public class CapnProtoMojo
     {
         List<String> allSchemas = Lists.newArrayList();
 
-        for (File file : fileTreeTraverser().preOrderTraversal(schemaBaseDirectory))
+        for (File file : fileTreeTraverser().preOrderTraversal(schemaDirectory))
         {
             if (isSchema(file))
             {
@@ -163,6 +163,6 @@ public class CapnProtoMojo
 
     private String relativize(Path path)
     {
-        return schemaBaseDirectory.toPath().relativize(path).toString();
+        return schemaDirectory.toPath().relativize(path).toString();
     }
 }
