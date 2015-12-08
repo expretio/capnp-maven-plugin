@@ -13,8 +13,8 @@ public class CapnpCompilerTest
 {
     private String testBase = "target/capnpCompilerTest";
     private File outputDirectory = new File(testBase + "/output");
-    private File schemaBaseDirectory = new File("src/test/resources/schema");
     private File workDirectory = new File(testBase + "/work");
+    private File schemaBaseDirectory = new File("src/test/resources/schema");
 
     private String packageBase = "com/expretio/maven/plugins/capnp";
     private String alphaSchema = packageBase + "/alpha/alpha.capnp";
