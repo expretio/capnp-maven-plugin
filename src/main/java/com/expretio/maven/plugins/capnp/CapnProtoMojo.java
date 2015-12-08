@@ -16,18 +16,15 @@
  */
 package com.expretio.maven.plugins.capnp;
 
-import static org.apache.commons.io.FileUtils.*;
-import static org.apache.commons.io.filefilter.FileFilterUtils.*;
+import static com.google.common.io.Files.*;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -35,6 +32,9 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+
+import com.google.common.collect.Lists;
+
 
 @Mojo(
         name = "generate",
@@ -128,29 +128,17 @@ public class CapnProtoMojo
 
     private Collection<String> getAllSchemas()
     {
-        IOFileFilter filter =
-            and(
-                suffixFileFilter("." + schemaFileExtension),
-                fileFileFilter()
-            );
+        List<String> allSchemas = Lists.newArrayList();
 
-        Collection<File> files = listFiles(schemaBaseDirectory, filter, TrueFileFilter.INSTANCE);
-
-        return relativize(files);
-    }
-
-    private Collection<String> relativize(Collection<File> files)
-    {
-        List<String> paths = new ArrayList<String>();
-
-        for (File file : files)
+        for (File file : fileTreeTraverser().preOrderTraversal(schemaBaseDirectory))
         {
-            paths.add(
-                schemaBaseDirectory.toPath().relativize(file.toPath()).toString()
-            );
+            if (isSchema(file))
+            {
+                allSchemas.add(relativize(file.toPath()));
+            }
         }
 
-        return paths;
+        return allSchemas;
     }
 
     private Collection<File> getImportDirectories()
@@ -161,5 +149,20 @@ public class CapnProtoMojo
         }
 
         return Arrays.asList(importDirectories);
+    }
+
+    private boolean isSchema(File file)
+    {
+        if (file.isDirectory())
+        {
+            return false;
+        }
+
+        return file.getName().endsWith("." + schemaFileExtension);
+    }
+
+    private String relativize(Path path)
+    {
+        return schemaBaseDirectory.toPath().relativize(path).toString();
     }
 }

@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.codehaus.plexus.util.FileUtils;
 
 /**
  * Implements a java adapter of capnproto compiler, creating java classes from schema definitions.
@@ -117,10 +117,11 @@ public class CapnpCompiler
             throws MojoExecutionException
         {
             outputDirectory.mkdirs();
+            workDirectory.mkdirs();
 
             try
             {
-                FileUtils.copyDirectory(schemaBaseDirectory, workDirectory);
+                FileUtils.copyDirectoryStructure(schemaBaseDirectory, workDirectory);
 
                 importDirectories.add(resources.getJavaSchema().getParentFile());
                 importDirectories.add(schemaBaseDirectory);
