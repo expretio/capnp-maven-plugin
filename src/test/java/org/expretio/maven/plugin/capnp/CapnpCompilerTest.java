@@ -1,13 +1,12 @@
-package com.expretio.maven.plugin.capnp;
+package org.expretio.maven.plugin.capnp;
 
 import java.io.File;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.assertj.core.api.Assertions;
+import org.expretio.maven.plugins.capnp.CapnpCompiler;
 import org.junit.Test;
-
-import com.expretio.maven.plugins.capnp.CapnpCompiler;
 
 public class CapnpCompilerTest
 {

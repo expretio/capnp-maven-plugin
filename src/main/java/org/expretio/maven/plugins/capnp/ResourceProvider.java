@@ -20,7 +20,7 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
  */
-package com.expretio.maven.plugins.capnp;
+package org.expretio.maven.plugins.capnp;
 
 import static com.google.common.io.Files.*;
 
