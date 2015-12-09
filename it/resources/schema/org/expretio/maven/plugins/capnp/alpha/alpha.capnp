@@ -2,7 +2,7 @@
 
 using Java = import "/java.capnp";
 
-$Java.package("com.expretio.maven.plugins.capnp.alpha");
+$Java.package("org.expretio.maven.plugins.capnp.alpha");
 $Java.outerClassname("AlphaCapnp");
 
 struct AlphaStruct
