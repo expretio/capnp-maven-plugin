@@ -28,40 +28,45 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.expretio.maven.plugins.capnpn.it</groupId>
-        <artifactId>capnp-parent-it</artifactId>
-        <version>1.0-SNAPSHOT</version>
-        <relativePath>..</relativePath>
-    </parent>
+    <groupId>org.expretio.maven.plugins.capnpn.it</groupId>
+    <artifactId>compile-all-it</artifactId>
+    <version>1.0-SNAPSHOT</version>
 
-    <artifactId>capnp-compile-all-it</artifactId>
-
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <properties>
-        <compileAll.outputDirectory>${project.it.outputDirectory}/compileAll</compileAll.outputDirectory>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <compileAllDirectory>${project.build.outputDirectory}/compile-all-it</compileAllDirectory>
     </properties>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>@project.groupId@</groupId>
-                <artifactId>@project.artifactId@</artifactId>
-                <executions>
-                    <execution>
-                        <id>compile-all-it</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${compileAll.outputDirectory}/output</outputDirectory>
-                            <workDirectory>${compileAll.outputDirectory}/work</workDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
+        <resources>
+            <resource>
+                <directory>resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>@project.groupId@</groupId>
+                    <artifactId>@project.artifactId@</artifactId>
+                    <version>@project.version@</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>generate</goal>
+                            </goals>
+                            <configuration>
+                                <schemaDirectory>resources/schema</schemaDirectory>
+                                <outputDirectory>${compileAllDirectory}/output</outputDirectory>
+                                <workDirectory>${compileAllDirectory}/work</workDirectory>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
 </project>

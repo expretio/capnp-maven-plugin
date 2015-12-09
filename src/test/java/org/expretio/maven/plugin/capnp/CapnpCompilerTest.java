@@ -11,7 +11,7 @@ import org.junit.Test;
 
 public class CapnpCompilerTest
 {
-    private String testBase = "target/capnpCompilerTest";
+    private String testBase = "target/compiler-test";
     private File outputDirectory = new File(testBase + "/output");
     private File workDirectory = new File(testBase + "/work");
     private File schemaDirectory = new File("src/test/resources/schema");
