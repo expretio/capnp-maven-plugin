@@ -2,7 +2,7 @@ import static org.expretio.maven.plugins.capnp.util.TestUtils.*;
 
 import java.io.*;
 
-String baseDirectory = "target/it/compile-all-it"
+String baseDirectory = "target/compile-all-it"
 String packageBase = "org/expretio/maven/plugins/capnp";
 
 File workDirectory = new File(baseDirectory + "/work");
