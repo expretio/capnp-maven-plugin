@@ -2,7 +2,7 @@ import static org.expretio.maven.plugins.capnp.util.TestUtils.*;
 
 import java.io.*;
 
-String baseDirectory = "target/compile-all-it"
+String baseDirectory = "target/it/compile-all/target"
 String packageBase = "org/expretio/maven/plugins/capnp";
 
 File workDirectory = new File(baseDirectory + "/work");
@@ -19,4 +19,4 @@ assertThat(outputDirectory)
     .contains(packageBase + "/alpha/AlphaCapnp.java")
     .contains(packageBase + "/beta/BetaCapnp.java");
 
-
+return true;

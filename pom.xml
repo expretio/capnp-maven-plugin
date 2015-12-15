@@ -237,7 +237,7 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <debug>true</debug>
+                                    <debug>false</debug>
                                     <streamLogs>true</streamLogs>
                                     <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
                                     <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
@@ -245,7 +245,7 @@
                                     <addTestClassPath>true</addTestClassPath>
                                     <postBuildHookScript>Verify</postBuildHookScript>
                                     <goals>
-                                        <goal>generate-test-resources</goal>
+                                        <goal>generate-sources</goal>
                                     </goals>
                                     <pomIncludes>
                                         <pomInclude>*/pom.xml</pomInclude>
