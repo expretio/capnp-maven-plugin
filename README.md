@@ -1,1 +1,0 @@
-# capnp-maven-plugin
