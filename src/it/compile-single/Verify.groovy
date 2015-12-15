@@ -17,6 +17,6 @@ assertThat(workDirectory)
 
 assertThat(outputDirectory)
     .contains(packageBase + "/alpha/AlphaCapnp.java")
-    .contains(packageBase + "/beta/BetaCapnp.java");
+    .doesNotContain(packageBase + "/beta/BetaCapnp.java");
 
 return true;

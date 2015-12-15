@@ -42,7 +42,7 @@
     <build>
         <resources>
             <resource>
-                <directory>resources</directory>
+                <directory>../resources</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
@@ -54,7 +54,7 @@
                 <executions>
                     <execution>
                         <configuration>
-                            <schemaDirectory>resources/schema</schemaDirectory>
+                            <schemaDirectory>../resources/schema</schemaDirectory>
                             <outputDirectory>${project.build.directory}/output</outputDirectory>
                             <workDirectory>${project.build.directory}/work</workDirectory>
                         </configuration>

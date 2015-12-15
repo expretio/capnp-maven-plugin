@@ -34,5 +34,15 @@ public final class TestUtils
 
             return this;
         }
+
+        public DirectoryAssert doesNotContain(String filename)
+        {
+            File file = new File(directory, filename);
+
+            Assertions.assertThat(file).doesNotExist();
+
+            return this;
+        }
+
     }
 }
