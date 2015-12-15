@@ -25,15 +25,9 @@
                 <version>@project.version@</version>
                 <executions>
                     <execution>
-                        <id>compile-all</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
-                        <configuration>
-                            <schemaDirectory>resources/schema</schemaDirectory>
-                            <outputDirectory>target/output</outputDirectory>
-                            <workDirectory>target/work</workDirectory>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>

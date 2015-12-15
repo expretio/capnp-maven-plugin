@@ -46,22 +46,22 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>@project.groupId@</groupId>
-                    <artifactId>@project.artifactId@</artifactId>
-                    <version>@project.version@</version>
-                    <executions>
-                        <execution>
-                            <configuration>
-                                <schemaDirectory>resources/schema</schemaDirectory>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>@project.groupId@</groupId>
+                <artifactId>@project.artifactId@</artifactId>
+                <version>@project.version@</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <schemaDirectory>resources/schema</schemaDirectory>
+                            <outputDirectory>${project.build.directory}/output</outputDirectory>
+                            <workDirectory>${project.build.directory}/work</workDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
 </project>
