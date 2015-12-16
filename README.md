@@ -81,7 +81,7 @@ Use `schemas` to explicitly specify which schemas to be compiled.
 Example - Using java.capnp
 ----------------------------------
 
-The [java.capnp](https://dwrensha.github.io/capnproto-java/index.html) schema, providing `package` and `outerClassname` annotations, is available at the root of working directory.
+The [java.capnp](https://dwrensha.github.io/capnproto-java/index.html) schema, providing `package` and `outerClassname` annotations, is available at the root of working directory. The following schema file bar.capnp containing shows how to use it.
 
 ```java
 @0xdc5e02f6a1a5e090;
