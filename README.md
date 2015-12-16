@@ -70,7 +70,6 @@ Use `schemas` to explicitly specify which schemas to be compiled.
             <configuration>
                 <schemas>
                     <schema>org/expretio/one/foo.capnp</schema>
-                    <schema>org/expretio/two/bar.capnp</schema>
                 </schemas>
             </configuration>
         </execution>
