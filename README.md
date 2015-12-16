@@ -101,11 +101,10 @@ struct FooStruct
 Example - Interdependent schemas
 ---------------------------------
 
-Suppose schema `bar.capnp` depends on FooStruct defined in `foo.capnp`.
+Suppose schema `bar.capnp` depends on `FooStruct` defined in `foo.capnp`.
 
+file: `${schemaDirectory}/com/expretio/one/foo.capnp`
 ```java
-#file: ${schemaDirectory}/com/expretio/one/foo.capnp
-
 @0xe9e172ef0f0049f6;
 
 using Java = import "/java.capnp";
@@ -119,9 +118,8 @@ struct FooStruct
 }
 ```
 
+file: `${schemaDirectory}/com/expretio/two/bar.capnp`
 ```java
-#file: ${schemaDirectory}/com/expretio/two/bar.capnp
-
 @0xb5724e25782451a6;
 
 using Java = import "/java.capnp";
