@@ -86,7 +86,7 @@ The following schema file `foo.capnp` illustrates how to import it.
 ```java
 @0xe9e172ef0f0049f6;
 
-*using Java = import "/java.capnp";*
+using Java = import "/java.capnp";
 
 $Java.package("org.expretio.one");
 $Java.outerClassname("Foo");
