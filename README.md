@@ -7,8 +7,6 @@ capnp-maven-plugin
 
 The [Cap'n Proto](http://capnproto.org) maven plugin provides dynamic compilation of capnproto's definition schemas at build time. Generated java classes are automatically added to project source.
 
-This plugin makes use of [capnp-harness](https://github.com/expretio/capnp-harness) which integrates the [capnp schema compiler](https://github.com/sandstorm-io/capnproto) and the [capnp java plugin](https://github.com/dwrensha/capnproto-java).
-
 ### Usage
 ---------
 
@@ -78,4 +76,23 @@ Use `schemas` to explicitly specify which schemas to be compiled.
         </execution>
     </executions>
 </plugin>
+```
+
+Example - Using java.capnp
+----------------------------------
+
+The [java.capnp](https://dwrensha.github.io/capnproto-java/index.html) schema, providing `package` and `outerClassname` annotations, is available at the root of working directory.
+
+```code
+@0xdc5e02f6a1a5e090;
+
+using Java = import "/java.capnp";
+
+$Java.package("org.expretio.foo");
+$Java.outerClassname("Bar");
+
+struct BarStruct
+{
+    baz @0 :Text;
+}
 ```
