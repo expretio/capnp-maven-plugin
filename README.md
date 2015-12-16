@@ -83,7 +83,7 @@ Example - Using java.capnp
 
 The [java.capnp](https://dwrensha.github.io/capnproto-java/index.html) schema, providing `package` and `outerClassname` annotations, is available at the root of working directory.
 
-```code
+```java
 @0xdc5e02f6a1a5e090;
 
 using Java = import "/java.capnp";
