@@ -103,7 +103,7 @@ Example - Interdependent schemas
 
 Suppose schema `bar.capnp` depends on `FooStruct` defined in `foo.capnp`.
 
-######file: `${schemaDirectory}/com/expretio/one/foo.capnp`
+#####file: `${schemaDirectory}/com/expretio/one/foo.capnp`
 ```java
 @0xe9e172ef0f0049f6;
 
@@ -118,7 +118,7 @@ struct FooStruct
 }
 ```
 
-######file: `${schemaDirectory}/com/expretio/two/bar.capnp`
+#####file: `${schemaDirectory}/com/expretio/two/bar.capnp`
 ```java
 @0xb5724e25782451a6;
 
