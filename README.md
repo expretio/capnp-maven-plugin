@@ -54,7 +54,7 @@ Dependencies
 todo
 
 Example - Compiling selected schemas
-----------------------------------
+------------------------------------
 
 Use `schemas` to explicitly specify which schemas to be compiled.
 
@@ -69,8 +69,8 @@ Use `schemas` to explicitly specify which schemas to be compiled.
             </goals>
             <configuration>
                 <schemas>
-                    <schema>org/expretio/foo/bar.capnp</schema>
-                    <schema>org/expretio/foo/baz.capnp</schema>
+                    <schema>org/expretio/one/foo.capnp</schema>
+                    <schema>org/expretio/two/bar.capnp</schema>
                 </schemas>
             </configuration>
         </execution>
@@ -79,21 +79,60 @@ Use `schemas` to explicitly specify which schemas to be compiled.
 ```
 
 Example - Using `java.capnp`
-----------------------------------
+----------------------------
 
 The [java.capnp](https://dwrensha.github.io/capnproto-java/index.html) schema, providing `package` and `outerClassname` annotations, is available at the root of working directory.
-The following schema file `bar.capnp` containing shows how to use it.
+The following schema file `foo.capnp` illustrates how to import it.
 
 ```java
-@0xdc5e02f6a1a5e090;
+@0xe9e172ef0f0049f6;
 
 using Java = import "/java.capnp";
 
-$Java.package("org.expretio.foo");
+$Java.package("org.expretio.one");
+$Java.outerClassname("Foo");
+
+struct FooStruct
+{
+    code @0 :Text;
+}
+```
+
+Example - Interdependent schemas
+---------------------------------
+
+Suppose schema `bar.capnp` depends on FooStruct defined in `foo.capnp`.
+
+```java
+#file: ${schemaDirectory}/com/expretio/one/foo.capnp
+
+@0xe9e172ef0f0049f6;
+
+using Java = import "/java.capnp";
+
+$Java.package("org.expretio.one");
+$Java.outerClassname("Foo");
+
+struct FooStruct
+{
+    code @0 :Text;
+}
+```
+
+```java
+#file: ${schemaDirectory}/com/expretio/two/bar.capnp
+
+@0xb5724e25782451a6;
+
+using Java = import "/java.capnp";
+
+using import "/org/expretio/one/foo.capnp".FooStruct;
+
+$Java.package("org.expretio.two");
 $Java.outerClassname("Bar");
 
 struct BarStruct
 {
-    baz @0 :Text;
+    foo @0 :FooStruct;
 }
 ```
