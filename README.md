@@ -5,12 +5,14 @@ capnp-maven-plugin
 
 ### Description
 
-The Cap'n Proto maven plugin provides dynamic compilation of capnproto's definition schemas at build time. Generated java classes are automatically added to project source.
+The [Cap'n Proto](http://capnproto.org) maven plugin provides dynamic compilation of capnproto's definition schemas at build time. Generated java classes are automatically added to project source.
+
+This plugin makes use of [capnp-harness](https://github.com/expretio/capnp-harness) which integrates the [capnp schema compiler](https://github.com/sandstorm-io/capnproto) and the [capnp java plugin](https://github.com/dwrensha/capnproto-java).
 
 ### Usage
 ---------
 
-The simplest configuration will compile all schema definition files in default schema directory.
+The simplest configuration will compile all schema definition files contained in default schema directory.
 
 ```xml
 <plugin>
