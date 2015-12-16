@@ -10,7 +10,7 @@ The Cap'n Proto maven plugin provides dynamic compilation of capnproto's definit
 ### Usage
 ---------
 
-The simplest configuration will compile all schemas definition files in default schema directory.
+The simplest configuration will compile all schema definition files in default schema directory.
 
 ```xml
 <plugin>
@@ -56,7 +56,7 @@ todo
 Example - Compile selected schemas
 ----------------------------------
 
-Use `schemas` to explicity specify which schema to be compiled.
+Use `schemas` to explicity specify which schemas to be compiled.
 
 ```xml
 <plugin>
@@ -70,6 +70,7 @@ Use `schemas` to explicity specify which schema to be compiled.
             <configuration>
                 <schemas>
                     <schema>org/expretio/maven/plugins/capnp/alpha/alpha.capnp</schema>
+                    <schema>org/expretio/maven/plugins/capnp/beta/beta.capnp</schema>
                 </schemas>
             </configuration>
         </execution>
