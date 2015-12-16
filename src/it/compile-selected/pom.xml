@@ -13,7 +13,7 @@
         <relativePath>..</relativePath>
     </parent>
 
-    <artifactId>compile-single-it</artifactId>
+    <artifactId>compile-selected-it</artifactId>
 
     <packaging>jar</packaging>
 
