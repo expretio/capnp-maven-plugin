@@ -1,0 +1,47 @@
+[![Build Status](https://travis-ci.org/expretio/capnp-maven-plugin.svg?branch=master)](https://travis-ci.org/expretio/capnp-maven-plugin)
+
+capnp-maven-plugin
+==================
+
+### Description
+
+The Cap'n Proto maven plugin provides dynamic compilation of capnproto's definition schemas at build time.
+
+### Usage
+--------------------------
+
+```xml
+<plugin>
+    <groupId>org.expretio.maven.plugins</groupId>
+    <artifactId>capnp-maven-plugin</artifactId>
+    <executions>
+        <execution>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+```
+
+Goal `generate`
+---------------
+
+### Attributes
+
+* Requires a Maven project to be executed.
+* The goal is thread-safe and supports parallel builds.
+* Binds by default to the lifecycle phase: generate-sources.
+
+### Configuration
+
+| name | type | Since | Description |
+| ---- | ---- | ----- | ----------- |
+| outputDirectory | File | 0.5.3 | Output directory of generated java classes.<br/>**Default:** `${project.build.directory}/generated-sources/capnp` |
+| schemaDirectory | File | 0.5.3 | Base directory of definition schemas.<br/>**Default:** `src/main/capnp/schema`|
+| workDirectory | File | 0.5.3 | Compilation process working directory.<br/>**Default:** `${project.build.directory}/capnp-work` |
+| schemaFileExtension | String | 0.5.3 | Extension of definition schema files.<br/>**Default:** `capnp`<br/>**Example:** `foo.capnp` |
+| schemas | File[] | 0.5.3 | Explicitly specified definition schema files. If none, all files matching `schemaFileExtension` under `schemaDirectory` will be compiled. Files must be specified relatively from `schemaDirectory`.<br/>**Example:** `<schemas><schema>org/expretio/foo/bar.capnp</schema></schemas>` |
+| importDirectories | File[] | 0.5.3 | Supplementary import directories. Note: `schemaDirectory` is implicitly considered as an import directory.. |
+| verbose | Boolean | 0.5.3 | Set to `false` for no output.<br/>**Default:** `true` |
+
