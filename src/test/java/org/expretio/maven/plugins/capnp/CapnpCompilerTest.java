@@ -1,4 +1,4 @@
-package org.expretio.maven.plugin.capnp;
+package org.expretio.maven.plugins.capnp;
 
 import static org.expretio.maven.plugins.capnp.util.TestUtils.*;
 

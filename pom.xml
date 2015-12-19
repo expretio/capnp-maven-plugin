@@ -55,6 +55,8 @@
         <maven-plugin-testing-harness.version>3.3.0</maven-plugin-testing-harness.version>
 
         <guava.version>18.0</guava.version>
+
+        <aether.version>1.13.1</aether.version>
     </properties>
 
     <build>
@@ -110,6 +112,10 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.version}</version>
                 <configuration>
+
+                    <!-- FIXME -->
+                    <skipTests>true</skipTests>
+
                     <argLine>-Xmx256m -XX:MaxPermSize=386m</argLine>
                     <detail>true</detail>
                 </configuration>
@@ -142,6 +148,18 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-api</artifactId>
+            <version>${aether.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-util</artifactId>
+            <version>${aether.version}</version>
         </dependency>
 
         <dependency>
@@ -237,7 +255,7 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <debug>false</debug>
+                                    <debug>true</debug>
                                     <streamLogs>true</streamLogs>
                                     <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
                                     <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>

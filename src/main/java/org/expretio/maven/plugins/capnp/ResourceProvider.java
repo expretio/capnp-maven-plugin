@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.expretio.maven.plugins.capnp.utils.Platform;
+
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Resources;
 
@@ -37,18 +39,14 @@ import com.google.common.io.Resources;
  */
 public class ResourceProvider
 {
-    private static final String RESOURCE_PATH = ResourceProvider.class.getPackage().getName().replace('.', '/') + '/';
-
-    private static final String CAPNP = "capnp";
-    private static final String CAPNPC_JAVA = "capnpc-java";
-    private static final String JAVA_SCHEMA = "java.capnp";
-
     public static ResourceProvider create(File workDirectory)
     {
         return new ResourceProvider(workDirectory);
     }
 
     private File workDirectory;
+    private Platform platform;
+
     private File capnp;
     private File capnpcJava;
     private File javaSchema;
@@ -59,6 +57,7 @@ public class ResourceProvider
     private ResourceProvider(File workDirectory)
     {
         this.workDirectory = workDirectory;
+        this.platform = Platform.detect();
     }
 
     /**
@@ -69,7 +68,7 @@ public class ResourceProvider
     {
         if (capnp == null)
         {
-            capnp = getResource(CAPNP);
+            capnp = getResource(platform.getCapnp());
         }
 
         return capnp;
@@ -83,7 +82,7 @@ public class ResourceProvider
     {
         if (capnpcJava == null)
         {
-            capnpcJava = getResource(CAPNPC_JAVA);
+            capnpcJava = getResource(platform.getCapnpcJava());
         }
 
         return capnpcJava;
@@ -97,7 +96,7 @@ public class ResourceProvider
     {
         if (javaSchema == null)
         {
-            javaSchema = getResource(JAVA_SCHEMA);
+            javaSchema = getResource(platform.getJavaSchema());
         }
 
         return javaSchema;
@@ -110,7 +109,7 @@ public class ResourceProvider
 
         try (
             OutputStream os = asByteSink(destFile).openBufferedStream();
-            InputStream is = Resources.getResource(RESOURCE_PATH + name).openStream();
+            InputStream is = Resources.getResource(name).openStream();
         )
         {
             ByteStreams.copy(is, os);
