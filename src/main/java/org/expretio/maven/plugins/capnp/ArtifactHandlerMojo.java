@@ -32,7 +32,13 @@ public abstract class ArtifactHandlerMojo
     private List<RemoteRepository> remoteRepository;
 
     /**
-     * Set to false to override configuration of capnp native dependencies.
+     * Version of the <code>capnp-natives</code> dependency.
+     */
+    @Parameter(defaultValue = "0.5.3-SNAPSHOT", required = true)
+    private String nativeDependencyVersion ;
+
+    /**
+     * Set to false to override the configuration of the <code>capnp-natives</code> dependency.
      */
     @Parameter(defaultValue = "true", required = true)
     private boolean handleNativeDependency;
@@ -64,7 +70,7 @@ public abstract class ArtifactHandlerMojo
             "capnp-natives",
             platform.getClassifier(),
             "jar",
-            "0.5.3-SNAPSHOT");
+            nativeDependencyVersion);
     }
 
     private URL[] resolve(Artifact artifact) throws MojoFailureException
