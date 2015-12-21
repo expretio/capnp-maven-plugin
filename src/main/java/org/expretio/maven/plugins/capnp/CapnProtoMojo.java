@@ -36,6 +36,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 
 import com.google.common.collect.Lists;
 
@@ -50,6 +51,9 @@ import com.google.common.collect.Lists;
 public class CapnProtoMojo
     extends ArtifactHandlerMojo
 {
+    @Parameter(defaultValue = "${project}", readonly = true)
+    private MavenProject mavenProject;
+
     @Parameter(defaultValue = "true")
     private boolean verbose;
 

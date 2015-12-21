@@ -9,7 +9,6 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
@@ -23,9 +22,6 @@ import org.expretio.maven.plugins.capnp.utils.Platform;
 public abstract class ArtifactHandlerMojo
     extends AbstractMojo
 {
-    @Parameter(defaultValue = "${project}", readonly = true)
-    protected MavenProject mavenProject;
-
     @Component
     private RepositorySystem repositorySystem;
 
@@ -35,7 +31,10 @@ public abstract class ArtifactHandlerMojo
     @Parameter(defaultValue = "${project.remoteProjectRepositories}", readonly = true)
     private List<RemoteRepository> remoteRepository;
 
-    @Parameter(defaultValue = "true")
+    /**
+     * Set to false to handle manually capnp native dependencies.
+     */
+    @Parameter(defaultValue = "true", required = true)
     private boolean handleNativeDependency;
 
     protected void doHandleNativeDependency() throws MojoFailureException
