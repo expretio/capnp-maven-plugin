@@ -32,13 +32,13 @@ public abstract class ArtifactHandlerMojo
     private List<RemoteRepository> remoteRepository;
 
     /**
-     * Version of the <code>capnp-natives</code> dependency.
+     * Version of the <code>org.expretio.maven:capnp-natives</code> dependency.
      */
     @Parameter(defaultValue = "0.5.3-SNAPSHOT", required = true)
     private String nativeDependencyVersion ;
 
     /**
-     * Set to false to override the configuration of the <code>capnp-natives</code> dependency.
+     * Set to false to configure manually the <code>org.expretio.maven:capnp-natives</code> dependency.
      */
     @Parameter(defaultValue = "true", required = true)
     private boolean handleNativeDependency;
