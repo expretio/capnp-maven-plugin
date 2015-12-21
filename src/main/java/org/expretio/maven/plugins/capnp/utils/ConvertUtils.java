@@ -6,9 +6,9 @@ public class ConvertUtils
 {
     private ConvertUtils(){}
 
-    public static org.sonatype.aether.artifact.Artifact toAether(Artifact artifact)
+    public static org.eclipse.aether.artifact.Artifact toAether(Artifact artifact)
     {
-        return new org.sonatype.aether.util.artifact.DefaultArtifact(
+        return new org.eclipse.aether.artifact.DefaultArtifact(
             artifact.getGroupId(),
             artifact.getArtifactId(),
             artifact.getClassifier(),
@@ -16,7 +16,7 @@ public class ConvertUtils
             artifact.getVersion());
     }
 
-    public static Artifact toMaven(org.sonatype.aether.artifact.Artifact artifact)
+    public static Artifact toMaven(org.eclipse.aether.artifact.Artifact artifact)
     {
         return new org.apache.maven.artifact.DefaultArtifact(
             artifact.getGroupId(),

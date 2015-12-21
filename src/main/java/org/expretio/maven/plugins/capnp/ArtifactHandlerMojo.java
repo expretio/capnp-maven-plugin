@@ -5,20 +5,19 @@ import static org.expretio.maven.plugins.capnp.utils.ConvertUtils.*;
 import java.util.List;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.factory.DefaultArtifactFactory;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.DefaultMavenProjectHelper;
 import org.apache.maven.project.MavenProject;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.resolution.ArtifactResult;
 import org.expretio.maven.plugins.capnp.utils.Platform;
-import org.sonatype.aether.RepositorySystem;
-import org.sonatype.aether.RepositorySystemSession;
-import org.sonatype.aether.repository.RemoteRepository;
-import org.sonatype.aether.resolution.ArtifactRequest;
-import org.sonatype.aether.resolution.ArtifactResolutionException;
-import org.sonatype.aether.resolution.ArtifactResult;
 
 
 public abstract class ArtifactHandlerMojo
@@ -59,12 +58,15 @@ public abstract class ArtifactHandlerMojo
 
     private Artifact createCapnpNativesArtifact(Platform platform)
     {
-        DefaultArtifactFactory factory = new DefaultArtifactFactory();
-
-        Artifact artifact = factory.createArtifactWithClassifier("org.expretio.maven", "capnp-natives",
-            mavenProject.getVersion(), "jar", platform.getClassifier());
-
-        return artifact;
+        return new org.apache.maven.artifact.DefaultArtifact(
+            "org.expretio.maven",
+            "capnp-natives",
+            org.apache.maven.artifact.versioning.VersionRange.createFromVersion("0.5.3-SNAPSHOT"),
+            null,
+            "jar",
+            platform.getClassifier(),
+            new org.apache.maven.artifact.handler.DefaultArtifactHandler(),
+            false);
     }
 
     private Artifact resolve(Artifact artifact) throws MojoFailureException

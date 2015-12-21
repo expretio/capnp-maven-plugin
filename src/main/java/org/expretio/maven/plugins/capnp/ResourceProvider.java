@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 
 import org.expretio.maven.plugins.capnp.utils.Platform;
 
@@ -107,9 +108,11 @@ public class ResourceProvider
     {
         File destFile = new File(workDirectory, name);
 
+        URL resource = Resources.getResource(name);
+
         try (
             OutputStream os = asByteSink(destFile).openBufferedStream();
-            InputStream is = Resources.getResource(name).openStream();
+            InputStream is = resource.openStream();
         )
         {
             ByteStreams.copy(is, os);
