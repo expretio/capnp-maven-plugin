@@ -32,7 +32,7 @@ public abstract class ArtifactHandlerMojo
     private List<RemoteRepository> remoteRepository;
 
     /**
-     * Set to false to handle manually capnp native dependencies.
+     * Set to false to override configuration of capnp native dependencies.
      */
     @Parameter(defaultValue = "true", required = true)
     private boolean handleNativeDependency;
