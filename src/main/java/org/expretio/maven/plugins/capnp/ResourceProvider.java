@@ -107,6 +107,7 @@ public class ResourceProvider
         throws IOException
     {
         File destFile = new File(workDirectory, name);
+        destFile.getParentFile().mkdirs();
 
         URL resource = Resources.getResource(name);
 

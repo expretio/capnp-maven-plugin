@@ -101,7 +101,7 @@ public class CapnProtoMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        handleCapnpNativesDependency();
+        doHandleNativeDependency();
 
         mavenProject.addCompileSourceRoot(outputDirectory.getAbsolutePath());
 
