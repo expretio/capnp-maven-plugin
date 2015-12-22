@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.expretio.maven.plugins.capnp.utils.Platform;
+import org.expretio.maven.plugins.capnp.platform.Platform;
 
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Resources;
@@ -39,9 +39,9 @@ import com.google.common.io.Resources;
  */
 public class ResourceProvider
 {
-    public static ResourceProvider create(File workDirectory)
+    public static ResourceProvider create( File workDirectory )
     {
-        return new ResourceProvider(workDirectory);
+        return new ResourceProvider( workDirectory );
     }
 
     private File workDirectory;
@@ -54,7 +54,7 @@ public class ResourceProvider
     /**
      * Constructor.
      */
-    private ResourceProvider(File workDirectory)
+    private ResourceProvider( File workDirectory )
     {
         this.workDirectory = workDirectory;
         this.platform = Platform.detect();
@@ -66,9 +66,9 @@ public class ResourceProvider
     public File getCapnp()
         throws IOException
     {
-        if (capnp == null)
+        if ( capnp == null )
         {
-            capnp = getResource(platform.getCapnp());
+            capnp = getResource( platform.getCapnp() );
         }
 
         return capnp;
@@ -80,9 +80,9 @@ public class ResourceProvider
     public File getCapnpcJava()
         throws IOException
     {
-        if (capnpcJava == null)
+        if ( capnpcJava == null )
         {
-            capnpcJava = getResource(platform.getCapnpcJava());
+            capnpcJava = getResource( platform.getCapnpcJava() );
         }
 
         return capnpcJava;
@@ -94,28 +94,28 @@ public class ResourceProvider
     public File getJavaSchema()
         throws IOException
     {
-        if (javaSchema == null)
+        if ( javaSchema == null )
         {
-            javaSchema = getResource(platform.getJavaSchema());
+            javaSchema = getResource( platform.getJavaSchema() );
         }
 
         return javaSchema;
     }
 
-    protected File getResource(String name)
+    protected File getResource( String name )
         throws IOException
     {
-        File destFile = new File(workDirectory, name);
+        File destFile = new File( workDirectory, name );
         destFile.getParentFile().mkdirs();
 
         try (
-            OutputStream os = asByteSink(destFile).openBufferedStream();
-            InputStream is = Resources.getResource(name).openStream();
+            OutputStream os = asByteSink( destFile ).openBufferedStream();
+            InputStream is = Resources.getResource( name ).openStream();
         )
         {
-            ByteStreams.copy(is, os);
+            ByteStreams.copy( is, os );
 
-            destFile.setExecutable(true);
+            destFile.setExecutable( true );
         }
 
         return destFile;

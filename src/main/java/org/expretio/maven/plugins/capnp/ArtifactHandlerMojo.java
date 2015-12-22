@@ -16,7 +16,7 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
-import org.expretio.maven.plugins.capnp.utils.Platform;
+import org.expretio.maven.plugins.capnp.platform.Platform;
 
 
 public abstract class ArtifactHandlerMojo
@@ -25,38 +25,38 @@ public abstract class ArtifactHandlerMojo
     @Component
     private RepositorySystem repositorySystem;
 
-    @Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
+    @Parameter( defaultValue = "${repositorySystemSession}", readonly = true )
     private RepositorySystemSession repositorySession;
 
-    @Parameter(defaultValue = "${project.remoteProjectRepositories}", readonly = true)
+    @Parameter( defaultValue = "${project.remoteProjectRepositories}", readonly = true )
     private List<RemoteRepository> remoteRepository;
 
     /**
      * Version of the <code>org.expretio.maven:capnp-natives</code> dependency.
      */
-    @Parameter(defaultValue = "0.5.3-SNAPSHOT", required = true)
+    @Parameter( defaultValue = "0.5.3-SNAPSHOT", required = true )
     private String nativeDependencyVersion ;
 
     /**
      * Set to false to configure manually the <code>org.expretio.maven:capnp-natives</code> dependency.
      */
-    @Parameter(defaultValue = "true", required = true)
+    @Parameter( defaultValue = "true", required = true )
     private boolean handleNativeDependency;
 
     protected void doHandleNativeDependency() throws MojoFailureException
     {
-        if (!handleNativeDependency)
+        if ( !handleNativeDependency )
         {
             return;
         }
 
         Artifact artifact = createNativeArtifact();
 
-        URL[] url = resolve(artifact);
+        URL[] url = resolve( artifact );
 
-        URLClassLoader urlClassLoader = new URLClassLoader(url);
+        URLClassLoader urlClassLoader = new URLClassLoader( url );
 
-        Thread.currentThread().setContextClassLoader(urlClassLoader);
+        Thread.currentThread().setContextClassLoader( urlClassLoader );
     }
 
     // [Utility methods]
@@ -70,26 +70,26 @@ public abstract class ArtifactHandlerMojo
             "capnp-natives",
             platform.getClassifier(),
             "jar",
-            nativeDependencyVersion);
+            nativeDependencyVersion );
     }
 
-    private URL[] resolve(Artifact artifact) throws MojoFailureException
+    private URL[] resolve( Artifact artifact ) throws MojoFailureException
     {
-        ArtifactRequest request = new ArtifactRequest(artifact, remoteRepository, null);
+        ArtifactRequest request = new ArtifactRequest( artifact, remoteRepository, null );
 
         try
         {
-            ArtifactResult result = repositorySystem.resolveArtifact(repositorySession, request);
+            ArtifactResult result = repositorySystem.resolveArtifact( repositorySession, request );
 
-            return toURL(result.getArtifact());
+            return toURL( result.getArtifact() );
         }
-        catch (ArtifactResolutionException | MalformedURLException e)
+        catch ( ArtifactResolutionException | MalformedURLException e )
         {
-            throw new MojoFailureException("Cannot resolve artifact: " + artifact, e);
+            throw new MojoFailureException( "Cannot resolve artifact: " + artifact, e );
         }
     }
 
-    private URL[] toURL(Artifact artifact) throws MalformedURLException
+    private URL[] toURL( Artifact artifact ) throws MalformedURLException
     {
         URL[] urls = new URL[1];
         urls[0] = artifact.getFile().toURI().toURL();

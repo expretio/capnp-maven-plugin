@@ -51,34 +51,34 @@ import com.google.common.collect.Lists;
 public class CapnProtoMojo
     extends ArtifactHandlerMojo
 {
-    @Parameter(defaultValue = "${project}", readonly = true)
+    @Parameter( defaultValue = "${project}", readonly = true )
     private MavenProject mavenProject;
 
-    @Parameter(defaultValue = "true")
+    @Parameter( defaultValue = "true" )
     private boolean verbose;
 
     /**
      * Output directory of generated java classes.
      */
-    @Parameter(defaultValue = "${project.build.directory}/generated-sources/capnp", required = true)
+    @Parameter( defaultValue = "${project.build.directory}/generated-sources/capnp", required = true )
     private File outputDirectory;
 
     /**
      * Base directory of definition schemas.
      */
-    @Parameter(defaultValue = "src/main/capnp/schema", required = true)
+    @Parameter( defaultValue = "src/main/capnp/schema", required = true )
     private File schemaDirectory;
 
     /**
      * Compilation process working directory.
      */
-    @Parameter(defaultValue = "${project.build.directory}/capnp-work", required = true)
+    @Parameter( defaultValue = "${project.build.directory}/capnp-work", required = true )
     private File workDirectory;
 
     /**
      * File extension of definition schemas.
      */
-    @Parameter(defaultValue = "capnp")
+    @Parameter( defaultValue = "capnp" )
     private String schemaFileExtension;
 
     /**
@@ -107,15 +107,15 @@ public class CapnProtoMojo
     {
         doHandleNativeDependency();
 
-        mavenProject.addCompileSourceRoot(outputDirectory.getAbsolutePath());
+        mavenProject.addCompileSourceRoot( outputDirectory.getAbsolutePath() );
 
         CapnpCompiler compiler = CapnpCompiler.builder()
-            .setOutputDirectory(outputDirectory)
-            .setSchemaDirectory(schemaDirectory)
-            .setWorkDirectory(workDirectory)
-            .addSchemas(getSchemas())
-            .addImportDirectories(getImportDirectories())
-            .setVerbose(verbose)
+            .setOutputDirectory( outputDirectory )
+            .setSchemaDirectory( schemaDirectory )
+            .setWorkDirectory( workDirectory )
+            .addSchemas( getSchemas() )
+            .addImportDirectories( getImportDirectories() )
+            .setVerbose( verbose )
             .build();
 
         compiler.compile();
@@ -125,23 +125,23 @@ public class CapnProtoMojo
 
     private Collection<String> getSchemas()
     {
-        if (schemas == null)
+        if ( schemas == null )
         {
             return getAllSchemas();
         }
 
-        return Arrays.asList(schemas);
+        return Arrays.asList( schemas );
     }
 
     private Collection<String> getAllSchemas()
     {
         List<String> allSchemas = Lists.newArrayList();
 
-        for (File file : fileTreeTraverser().preOrderTraversal(schemaDirectory))
+        for ( File file : fileTreeTraverser().preOrderTraversal( schemaDirectory) )
         {
-            if (isSchema(file))
+            if ( isSchema( file) )
             {
-                allSchemas.add(relativize(file.toPath()));
+                allSchemas.add( relativize( file.toPath() ) );
             }
         }
 
@@ -150,26 +150,26 @@ public class CapnProtoMojo
 
     private Collection<File> getImportDirectories()
     {
-        if (importDirectories == null)
+        if ( importDirectories == null )
         {
             return Collections.EMPTY_LIST;
         }
 
-        return Arrays.asList(importDirectories);
+        return Arrays.asList( importDirectories );
     }
 
-    private boolean isSchema(File file)
+    private boolean isSchema( File file )
     {
-        if (file.isDirectory())
+        if ( file.isDirectory() )
         {
             return false;
         }
 
-        return file.getName().endsWith("." + schemaFileExtension);
+        return file.getName().endsWith( "." + schemaFileExtension );
     }
 
-    private String relativize(Path path)
+    private String relativize( Path path )
     {
-        return schemaDirectory.toPath().relativize(path).toString();
+        return schemaDirectory.toPath().relativize( path ).toString();
     }
 }

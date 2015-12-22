@@ -51,7 +51,7 @@ public class CapnpCompiler
     /**
      * Constructor.
      */
-    private CapnpCompiler(Command command, List<String> schemas, boolean verbose)
+    private CapnpCompiler( Command command, List<String> schemas, boolean verbose )
     {
         this.command = command;
         this.schemas = schemas;
@@ -61,24 +61,24 @@ public class CapnpCompiler
     public void compile()
         throws MojoExecutionException
     {
-        for (String schema : schemas)
+        for ( String schema : schemas )
         {
-            compile(schema);
+            compile( schema );
         }
     }
 
     // [Utility methods]
 
-    private void compile(String schema)
+    private void compile( String schema )
         throws MojoExecutionException
     {
         try
         {
             ProcessBuilder processBuilder =
-                    new ProcessBuilder(command.get(schema))
-                        .directory(command.workDirectory);
+                    new ProcessBuilder( command.get( schema ) )
+                        .directory( command.workDirectory );
 
-            if (verbose)
+            if ( verbose )
             {
                 processBuilder.inheritIO();
             }
@@ -87,14 +87,14 @@ public class CapnpCompiler
 
             int exit = process.waitFor();
 
-            if (exit != 0)
+            if ( exit != 0 )
             {
-                throw new MojoExecutionException("Unexpected exit value (" + exit + ") while compiling " + schema);
+                throw new MojoExecutionException( "Unexpected exit value ( " + exit + " ) while compiling " + schema );
             }
         }
-        catch (IOException | InterruptedException e)
+        catch ( IOException | InterruptedException e )
         {
-            throw new MojoExecutionException("Cannot compile schema " + schema + ".", e);
+            throw new MojoExecutionException( "Cannot compile schema " + schema + ".", e );
         }
     }
 
@@ -115,10 +115,10 @@ public class CapnpCompiler
                 File outputDirectory,
                 File schemaDirectory,
                 File workDirectory,
-                List<File> importDirectories)
+                List<File> importDirectories )
             throws MojoExecutionException, MojoFailureException
         {
-            this.resources = ResourceProvider.create(workDirectory);
+            this.resources = ResourceProvider.create( workDirectory );
             this.outputDirectory = outputDirectory;
             this.schemaDirectory = schemaDirectory;
             this.workDirectory = workDirectory;
@@ -127,10 +127,10 @@ public class CapnpCompiler
             initialize();
         }
 
-        public List<String> get(String schema)
+        public List<String> get( String schema )
         {
-            List<String> fullCommand = new ArrayList<>(base);
-            fullCommand.add(schema);
+            List<String> fullCommand = new ArrayList<>( base );
+            fullCommand.add( schema );
 
             return fullCommand;
         }
@@ -143,30 +143,30 @@ public class CapnpCompiler
 
             try
             {
-                FileUtils.copyDirectoryStructure(schemaDirectory, workDirectory);
+                FileUtils.copyDirectoryStructure( schemaDirectory, workDirectory );
 
-                importDirectories.add(resources.getJavaSchema().getParentFile());
-                importDirectories.add(schemaDirectory);
+                importDirectories.add( resources.getJavaSchema().getParentFile() );
+                importDirectories.add( schemaDirectory );
 
                 setBase();
             }
-            catch (IOException e)
+            catch ( IOException e )
             {
-                throw new MojoExecutionException("Unable to initialize capnp environment.", e);
+                throw new MojoExecutionException( "Unable to initialize capnp environment.", e );
             }
         }
 
         private void setBase()
             throws IOException
         {
-            base.add(resources.getCapnp().getAbsolutePath());
-            base.add("compile");
-            base.add("--verbose");
-            base.add("-o" + resources.getCapnpcJava().getAbsolutePath() + ":" + outputDirectory.getAbsolutePath());
+            base.add( resources.getCapnp().getAbsolutePath() );
+            base.add( "compile" );
+            base.add( "--verbose" );
+            base.add( "-o" + resources.getCapnpcJava().getAbsolutePath() + ":" + outputDirectory.getAbsolutePath() );
 
-            for (File importDirectory : importDirectories)
+            for ( File importDirectory : importDirectories )
             {
-                base.add("-I" + importDirectory.getAbsolutePath());
+                base.add( "-I" + importDirectory.getAbsolutePath() );
             }
         }
     }
@@ -185,61 +185,61 @@ public class CapnpCompiler
         {
             validate();
 
-            Command command = new Command(outputDirectory, schemaDirectory, workDirectory, importDirectories);
+            Command command = new Command( outputDirectory, schemaDirectory, workDirectory, importDirectories );
 
-            return new CapnpCompiler(command, schemas, verbose);
+            return new CapnpCompiler( command, schemas, verbose );
         }
 
-        public Builder setOutputDirectory(File outputDirectory)
+        public Builder setOutputDirectory( File outputDirectory )
         {
             this.outputDirectory = outputDirectory;
 
             return this;
         }
 
-        public Builder setSchemaDirectory(File schemaDirectory)
+        public Builder setSchemaDirectory( File schemaDirectory )
         {
             this.schemaDirectory = schemaDirectory;
 
             return this;
         }
 
-        public Builder setWorkDirectory(File workDirectory)
+        public Builder setWorkDirectory( File workDirectory )
         {
             this.workDirectory = workDirectory;
 
             return this;
         }
 
-        public Builder addImportDirectory(File importDirectory)
+        public Builder addImportDirectory( File importDirectory )
         {
-            importDirectories.add(importDirectory);
+            importDirectories.add( importDirectory );
 
             return this;
         }
 
-        public Builder addImportDirectories(Collection<File> importDirectories)
+        public Builder addImportDirectories( Collection<File> importDirectories )
         {
-            this.importDirectories.addAll(importDirectories);
+            this.importDirectories.addAll( importDirectories );
 
             return this;
         }
 
-        public Builder addSchema(String schema)
+        public Builder addSchema( String schema )
         {
-            schemas.add(schema);
+            schemas.add( schema );
 
             return this;
         }
 
-        public Builder addSchemas(Collection<String> schemas)
+        public Builder addSchemas( Collection<String> schemas )
         {
-            this.schemas.addAll(schemas);
+            this.schemas.addAll( schemas );
 
             return this;
         }
 
-        public Builder setVerbose(boolean value)
+        public Builder setVerbose( boolean value )
         {
             this.verbose = value;
 
@@ -249,32 +249,32 @@ public class CapnpCompiler
         private void validate()
             throws MojoFailureException
         {
-            validate(outputDirectory, "Output directory");
-            validate(schemaDirectory, "Schema base directory");
-            validate(workDirectory, "Working directory");
+            validate( outputDirectory, "Output directory" );
+            validate( schemaDirectory, "Schema base directory" );
+            validate( workDirectory, "Working directory" );
 
-            for (File importDirectory : importDirectories)
+            for ( File importDirectory : importDirectories )
             {
-                validate(importDirectory, "Import directory");
+                validate( importDirectory, "Import directory" );
             }
 
-            if (schemas.isEmpty())
+            if ( schemas.isEmpty() )
             {
-                throw new MojoFailureException("At least one schema file must be specified.");
+                throw new MojoFailureException( "At least one schema file must be specified." );
             }
         }
 
-        private void validate(File directory, String name)
+        private void validate( File directory, String name )
             throws MojoFailureException
         {
-            if (directory == null)
+            if ( directory == null )
             {
-                throw new MojoFailureException(name + " must be specified.");
+                throw new MojoFailureException( name + " must be specified." );
             }
 
-            if (directory.isFile())
+            if ( directory.isFile() )
             {
-                throw new MojoFailureException(name + " must not be a file.");
+                throw new MojoFailureException( name + " must not be a file." );
             }
         }
     }

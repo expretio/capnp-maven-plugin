@@ -13,22 +13,22 @@
  *=============================================================================
  */
 
-package org.expretio.maven.plugins.capnp.utils;
+package org.expretio.maven.plugins.capnp.platform;
 
 public class UnsupportedPlatformException extends RuntimeException
 {
-    public UnsupportedPlatformException(String message, Throwable cause)
+    public UnsupportedPlatformException( String message, Throwable cause )
     {
-        super(message, cause);
+        super( message, cause );
     }
 
-    public UnsupportedPlatformException(String message)
+    public UnsupportedPlatformException( String message )
     {
-        super(message);
+        super( message );
     }
 
-    public UnsupportedPlatformException(Throwable cause)
+    public UnsupportedPlatformException( Throwable cause )
     {
-        super(cause);
+        super( cause );
     }
 }
