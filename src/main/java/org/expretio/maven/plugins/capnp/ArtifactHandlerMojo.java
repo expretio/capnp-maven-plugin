@@ -22,6 +22,8 @@ import org.expretio.maven.plugins.capnp.platform.Platform;
 public abstract class ArtifactHandlerMojo
     extends AbstractMojo
 {
+    private static final String auto = "auto";
+
     @Component
     private RepositorySystem repositorySystem;
 
@@ -36,6 +38,14 @@ public abstract class ArtifactHandlerMojo
      */
     @Parameter( defaultValue = "0.5.3-SNAPSHOT", required = true )
     private String nativeDependencyVersion ;
+
+    /**
+     * Classifier of the <code>org.expretio.maven:capnp-natives</code> dependency, forcing the targeted platform when
+     * specified. It is recommended to use the default value, which adjusts the classifier to current platform
+     * automatically.
+     */
+    @Parameter( defaultValue = auto, required = true )
+    private String nativeDependencyClassifier;
 
     /**
      * Set to false to configure manually the <code>org.expretio.maven:capnp-natives</code> dependency.
@@ -63,12 +73,16 @@ public abstract class ArtifactHandlerMojo
 
     private Artifact createNativeArtifact()
     {
-        Platform platform = Platform.detect();
+        if ( nativeDependencyClassifier.equals( auto ) )
+        {
+            Platform platform = Platform.detect();
+            nativeDependencyClassifier = platform.getClassifier();
+        }
 
         return new org.eclipse.aether.artifact.DefaultArtifact(
             "org.expretio.maven",
             "capnp-natives",
-            platform.getClassifier(),
+            nativeDependencyClassifier,
             "jar",
             nativeDependencyVersion );
     }

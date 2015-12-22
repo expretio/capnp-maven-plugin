@@ -2,7 +2,7 @@ import static org.expretio.maven.plugins.capnp.util.TestUtils.*;
 
 import java.io.*;
 
-import org.expretio.maven.plugins.capnp.utils.Platform;
+import org.expretio.maven.plugins.capnp.platform.Platform;
 
 Platform platform = Platform.detect();
 
