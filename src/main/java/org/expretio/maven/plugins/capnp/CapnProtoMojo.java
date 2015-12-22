@@ -121,7 +121,7 @@ public class CapnProtoMojo
         compiler.compile();
     }
 
-    // [Utility methods]
+    // [ Utility methods ]
 
     private Collection<String> getSchemas()
     {
@@ -139,7 +139,7 @@ public class CapnProtoMojo
 
         for ( File file : fileTreeTraverser().preOrderTraversal( schemaDirectory) )
         {
-            if ( isSchema( file) )
+            if ( isSchema( file ) )
             {
                 allSchemas.add( relativize( file.toPath() ) );
             }

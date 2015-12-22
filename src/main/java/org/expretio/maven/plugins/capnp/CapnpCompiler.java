@@ -67,7 +67,7 @@ public class CapnpCompiler
         }
     }
 
-    // [Utility methods]
+    // [ Utility methods ]
 
     private void compile( String schema )
         throws MojoExecutionException
@@ -98,7 +98,7 @@ public class CapnpCompiler
         }
     }
 
-    // [Inner classes]
+    // [ Inner classes ]
 
     private static class Command
     {

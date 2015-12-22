@@ -59,7 +59,7 @@ public abstract class ArtifactHandlerMojo
         Thread.currentThread().setContextClassLoader( urlClassLoader );
     }
 
-    // [Utility methods]
+    // [ Utility methods ]
 
     private Artifact createNativeArtifact()
     {
