@@ -25,6 +25,15 @@ The simplest configuration will compile all schema definition files contained in
     </executions>
 </plugin>
 ```
+The [Cap'n Proto Java Plugin](https://dwrensha.github.io/capnproto-java/index.html) runtime dependency is needed.
+
+```xml
+<dependency>
+    <groupId>org.capnproto</groupId>
+    <artifactId>runtime</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+</dependency>
+```
 
 Goal `generate`
 ---------------
@@ -49,25 +58,6 @@ Goal `generate`
 | nativeDependencyClassifier | String | 1.0 | Classifier of the `org.expretio.maven:capnp-natives` dependency, forcing the targeted platform when specified. It is recommended to use the default value, which adjusts the classifier to current platform automatically.<br/>**Default:** `auto` |
 | handleNativeDependency | Boolean | 1.0 | Set to `false` to configure manually the `org.expretio.maven:capnp-natives` dependency.<br/>**Default:** `true` |
 | verbose | Boolean | 1.0 | Set to `false` for no output.<br/>**Default:** `true` |
-
-
-Dependencies
-------------
-
-The [Cap'n Proto Java Plugin](https://dwrensha.github.io/capnproto-java/index.html) runtime dependency is needed.
-
-```xml
-<dependency>
-    <groupId>org.capnproto</groupId>
-    <artifactId>runtime</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
-</dependency>
-```
-
-Supported platforms
--------------------
-
-todo
 
 Example - Compiling selected schemas
 ------------------------------------
@@ -149,3 +139,10 @@ struct BarStruct
     foo @0 :FooStruct;
 }
 ```
+
+Supported platforms
+-------------------
+
+- Linux 64 bits
+- Windows 32 bits
+- Mac OS X (coming soon)
