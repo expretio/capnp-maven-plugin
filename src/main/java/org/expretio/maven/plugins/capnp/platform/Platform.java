@@ -4,6 +4,7 @@ package org.expretio.maven.plugins.capnp.platform;
 public enum Platform
 {
     LINUX64( "linux/x64/capnp", "linux/x64/capnpc-java" ),
+    OSX64( "osx/x64/capnp", "osx/x64/capnpc-java" ),
     WIN32( "windows/x86/capnp.exe", "windows/x64/capnpc-java.exe" );
 
     private static final String base = "org/expretio/maven/capnp/";
@@ -56,6 +57,11 @@ public enum Platform
         if ( osname.startsWith( "linux" ) && osarch.contains( "64" ) )
         {
             return LINUX64;
+        }
+
+        if ( osname.startsWith( "mac os x" ) && osarch.contains( "64" ) )
+        {
+            return OSX64;
         }
 
         if ( osname.startsWith( "windows" ) )

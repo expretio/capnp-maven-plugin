@@ -145,4 +145,4 @@ Supported platforms
 
 - Linux 64-bit
 - Windows
-- Mac OS X (coming soon)
+- OS X 64-bit
