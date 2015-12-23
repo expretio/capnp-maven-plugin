@@ -143,6 +143,6 @@ struct BarStruct
 Supported platforms
 -------------------
 
-- Linux 64 bits
-- Windows 32 bits
+- Linux 64-bit
+- Windows
 - Mac OS X (coming soon)
