@@ -48,8 +48,6 @@
 
         <java.javadoc.version>2.10.3</java.javadoc.version>
 
-        <surefire.version>2.19</surefire.version>
-
         <maven.version>3.2.5</maven.version>
         <maven-plugin-plugin.version>3.4</maven-plugin-plugin.version>
         <maven-plugin-testing-harness.version>3.3.0</maven-plugin-testing-harness.version>
@@ -106,19 +104,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${surefire.version}</version>
-                <configuration>
-
-                    <!-- FIXME -->
-                    <skipTests>true</skipTests>
-
-                    <argLine>-Xmx256m -XX:MaxPermSize=386m</argLine>
-                    <detail>true</detail>
-                </configuration>
             </plugin>
         </plugins>
     </build>
