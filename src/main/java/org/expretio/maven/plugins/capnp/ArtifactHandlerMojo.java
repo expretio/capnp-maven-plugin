@@ -73,16 +73,18 @@ public abstract class ArtifactHandlerMojo
 
     private Artifact createNativeArtifact()
     {
-        if ( nativeDependencyClassifier.equals( auto ) )
+        String classifier = nativeDependencyClassifier;
+
+        if ( classifier.equals( auto ) )
         {
             Platform platform = Platform.detect();
-            nativeDependencyClassifier = platform.getClassifier();
+            classifier = platform.getClassifier();
         }
 
         return new org.eclipse.aether.artifact.DefaultArtifact(
             "org.expretio.maven",
             "capnp-natives",
-            nativeDependencyClassifier,
+            classifier,
             "jar",
             nativeDependencyVersion );
     }
