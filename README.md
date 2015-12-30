@@ -7,6 +7,9 @@ capnp-maven-plugin
 
 The [Cap'n Proto](http://capnproto.org) maven plugin provides dynamic compilation of capnproto's definition schemas at build time. Generated java classes are automatically added to project source.
 
+The plugin handles its M2E build lifecycle. |
+---|
+
 ### Usage
 ---------
 
