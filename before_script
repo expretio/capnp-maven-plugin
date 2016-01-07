@@ -2,6 +2,8 @@
 
 # copied from: http://eng.rightscale.com/2015/04/27/dependent-builds-in-travis.html
 
+echo 'entering script'
+
 if [ -n "$DEPENDENT_BUILD" ]; then
   cd `echo $TRIGGER_REPO | sed 's|[^/]*/||'` # Strip the user / org from the repo slug
   git fetch
