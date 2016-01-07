@@ -2,3 +2,6 @@ language: java
 script: mvn clean javadoc:javadoc site
 jdk:
   - oraclejdk7
+
+before_script:
+  - ./before_script  
