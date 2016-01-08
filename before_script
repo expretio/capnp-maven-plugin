@@ -4,12 +4,9 @@
 
 if [ -n "$DEPENDENT_BUILD" ]; then
 
-  # FIXME: Remove
-  pwd
-  ls -la
-  ls -la ..
+  #cd `echo $TRIGGER_REPO | sed 's|[^/]*/||'` # Strip the user / org from the repo slug
 
-  cd `echo ../$TRIGGER_REPO | sed 's|[^/]*/||'` # Strip the user / org from the repo slug
+  cd ..
   git fetch
   git checkout $TRIGGER_COMMIT
 fi
