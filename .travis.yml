@@ -6,6 +6,6 @@ jdk:
 #  - chmod +x before_script
 #  - ./before_script
 
-script: mvn clean javadoc:javadoc site -Dit.execute=true
+script: mvn clean verify javadoc:javadoc site
 
 
