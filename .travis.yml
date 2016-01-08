@@ -1,7 +1,10 @@
 language: java
+
+before_script:
+  - chmod +x before_script
+  - ./before_script
+
 script: mvn clean javadoc:javadoc site
 jdk:
   - oraclejdk7
 
-before_script:
-  - ./before_script
