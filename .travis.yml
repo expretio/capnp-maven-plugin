@@ -1,7 +1,19 @@
 language: java
+
+env:
+  global:
+    - secure: "SkTYyM4DY9UUxbu03SQS8wY2Rq1waY4ghg/w19x+cmGVhrF+3HoFvJsSKUIbBftCuhPFM/edeHIIk1c3EcWX+CYBErwWWsGea9bfAjwQxbrrGzP8aoaJYkkUaFVDWrAk9RCsmjkyUdyp95bql2YDg0m9R9uxtf/lzuju2My6pW92x1LxumuiM/Q2DgzzS2BZn4/b88FiPgfgqVW0EPKnBMSNZ8eUOwQyJ9L7840tvlodHXmrxE5/lUzkc8lNQbAq/AVn4w/CdWg+TnriCIUwIHtzrwzZS5/09e2JHiyoF2r0z+lkAGiEvEm5VC9Rrt3U38BzQeFH0rYgxJFqmz6aeBADKB6t4mt9pbnApLOJcneTSyRDTsAC+qNOvAkCI/IlnYJcUIplV0JzrV26Hv41DWjHOKTpw5FTa36f490QQEoSF87xF9Q+G4gXyGq9L//PGOGyLn0jQuvo9iPHaE0VJM17VA0aldmKPlj/yLopHWvrACzoIeQf6OUhPn7ITiB1+zJa60ssO/0rpnNkMvWg1qqsrQQjKaCiDFxoIMxaHf9wA6RJwlhTikdjpWmC9/KZVQQfH1pwCmEtlwMguBsKbCHLA2IA5br0WhIOoQ0ocIS4sHvarL7dXWVfMLfiJIgm3qcMjXy8CZOUfyPnNifVF1VA6IU8xuUvbDh6YWpJfKY="
+    - secure: "O7vw+Es5eK+tjsWXtgTOZpLljp78CRFZLCYn85goyFB9XL2sx1s8NRAyBvUkyw+kxBuHrv9Y9RfSmyCh8aBj5ZmgLEF0cTz6YPco9hlXXRYjpHDRt0e0nGQIHhYqa56z8WkXpg8WmBLRnYndQYg9Loz4fEY28lo6CDiTtMuBptvZbTruwSK2WP/pHv38YGb7P8EF6EvHOCixWc0EXJCjWrtveMwvqaOuniyu/DKeio8A8KG/3vxGTkX5yrWQMeoEn6lLPEGT9nkTUJ30EH72u+2dM/JZLIjHqDP4uroa7OKCuVMo9t//CtKKWyk8oGssjbmhLXdRSjj9q2mTkR23i88g/9WcEnMAKzLIumpBLQgoGY3T0dyvjm+FMTLCwGHIW7mTfCTnEeeiveZlPggHZhS49XibmGXw28ccjLZJ0xumylLbzkGQhElYEkSS+yQUYWslap/b64NshLEw5Lmu9y4aqSS0KYcDqPWWtp17p7I6RuU8vObM7YrcmRKVU3JCOVqJVTmOSHFTrr9SyvBlTUZg8h/Fs3fjmwYQwxGFNOaTCR++EEIvPzK0Gl+akcAUZj8UrrwJrsqTb05MVDfPLlE2ryxpo7RAhKWyNOLXxW/hTVMUkUFCB5W8BiPzZVlyvy+jgyrVNMMTpphoh+C4UNONAHmoz6RGOVhFHZk3TDM="
+    - MAVEN_OPTS="-Xmx128m -Dquiet=true -Dmaven.javadoc.failOnError=false"
+
 jdk:
   - oraclejdk7
 
-script: mvn -Dit.execute clean javadoc:javadoc install site
+before_install:
+  - cp settings.xml $HOME/.m2
 
-
+install:
+  -
+  
+script:
+  - mvn -e -B -T 4 clean javadoc:jar source:jar deploy -DaltDeploymentRepository=oss-snapshots::default::https://oss.sonatype.org/content/repositories/snapshots
