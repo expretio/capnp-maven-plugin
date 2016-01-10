@@ -16,4 +16,4 @@ install:
   -
   
 script:
-  - mvn -e -B -T 4 clean javadoc:jar source:jar deploy -DaltDeploymentRepository=oss-snapshots::default::https://oss.sonatype.org/content/repositories/snapshots
+  - mvn -e -B -T 4 clean javadoc:jar source:jar deploy -Dit.execute -DaltDeploymentRepository=oss-snapshots::default::https://oss.sonatype.org/content/repositories/snapshots
