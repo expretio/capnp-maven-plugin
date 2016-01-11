@@ -65,6 +65,7 @@ public class CapnProtoMojo
     extends AbstractMojo
 {
     private static final String automaticClassifier = "auto";
+    private static final String defaultNativeDependencyVersion = "0.5.3-SNAPSHOT";
 
     @Component
     private RepositorySystem repositorySystem;
@@ -128,7 +129,7 @@ public class CapnProtoMojo
     /**
      * Version of the <code>org.expretio.maven:capnp-natives</code> dependency.
      */
-    @Parameter( defaultValue = "0.5.3-SNAPSHOT", required = true )
+    @Parameter( defaultValue = defaultNativeDependencyVersion, required = true )
     private String nativeDependencyVersion ;
 
     /**
