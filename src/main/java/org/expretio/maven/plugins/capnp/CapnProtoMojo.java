@@ -273,6 +273,8 @@ public class CapnProtoMojo
 
     private String relativize( Path path )
     {
-        return schemaDirectory.toPath().relativize( path ).toString();
+        String relativized = schemaDirectory.toPath().relativize( path ).toString();
+
+        return relativized.replace( '\\', '/' );
     }
 }
