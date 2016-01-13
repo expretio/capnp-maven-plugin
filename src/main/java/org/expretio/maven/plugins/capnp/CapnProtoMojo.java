@@ -248,9 +248,6 @@ public class CapnProtoMojo
             }
         }
 
-        // FIXME: Remove
-        System.out.println("bidon allschemas: " + allSchemas);
-
         return allSchemas;
     }
 
