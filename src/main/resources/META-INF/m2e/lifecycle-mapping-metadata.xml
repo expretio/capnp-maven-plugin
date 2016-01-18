@@ -31,10 +31,13 @@
                     <goal>generate</goal>
                 </goals>
             </pluginExecutionFilter>
-            <action>
-                <ignore/>
-           </action>
-        </pluginExecution>
+			<action>
+				<execute>
+					<runOnConfiguration>true</runOnConfiguration>
+					<runOnIncremental>true</runOnIncremental>
+				</execute>
+			</action>
+	    </pluginExecution>
     </pluginExecutions>
 
 </lifecycleMappingMetadata>
