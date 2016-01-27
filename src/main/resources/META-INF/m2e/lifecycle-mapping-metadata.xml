@@ -31,12 +31,12 @@
                     <goal>generate</goal>
                 </goals>
             </pluginExecutionFilter>
-		<action>
-			<execute>
-				<runOnConfiguration>true</runOnConfiguration>
-				<runOnIncremental>true</runOnIncremental>
-			</execute>
-		</action>
+                <action>
+                    <execute>
+                        <runOnConfiguration>true</runOnConfiguration>
+                        <runOnIncremental>true</runOnIncremental>
+                    </execute>
+                </action>
 	    </pluginExecution>
     </pluginExecutions>
 
