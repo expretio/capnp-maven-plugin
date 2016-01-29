@@ -275,7 +275,7 @@ public class CapnProtoMojo
     {
         String relativized = schemaDirectory.toPath().relativize( path ).toString();
 
-        // capnp native program is not compatible with windows file separator.
+        // capnp native program is not compatible with windows file separator
         return relativized.replace( '\\', '/' );
     }
 }
