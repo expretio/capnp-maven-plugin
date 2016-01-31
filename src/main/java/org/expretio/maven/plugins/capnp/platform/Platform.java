@@ -1,17 +1,28 @@
 package org.expretio.maven.plugins.capnp.platform;
 
+import com.google.common.base.StandardSystemProperty;
 
 public enum Platform
 {
     LINUX64( "linux/x64/capnp", "linux/x64/capnpc-java" ),
     OSX64( "osx/x64/capnp", "osx/x64/capnpc-java" ),
-    WIN32( "windows/x86/capnp.exe", "windows/x86/capnpc-java.exe" );
+    WIN32( "windows/x86/capnp.exe", "windows/x86/capnpc-java.exe" ),
+    UNSUPPORTED( null, null );
+
+    private static final Platform currentPlatform;
+
+    static
+    {
+        detect();
+
+        currentPlatform = Platform.getCurrent();
+    }
 
     private static final String base = "org/expretio/maven/capnp/";
 
-    private String capnp;
-    private String capnpcJava;
-    private String javaSchema;
+    private final String capnp;
+    private final String capnpcJava;
+    private final String javaSchema;
 
     private Platform( String capnp, String capnpcJava )
     {
@@ -49,10 +60,15 @@ public enum Platform
         return javaSchema;
     }
 
-    public static Platform detect() throws UnsupportedPlatformException
+    public static Platform getCurrent()
     {
-        String osname = System.getProperty( "os.name" ).toLowerCase();
-        String osarch = System.getProperty( "os.arch" ).toLowerCase();
+        return currentPlatform;
+    }
+
+    protected static Platform detect()
+    {
+        String osname = StandardSystemProperty.OS_NAME.name().toLowerCase();
+        String osarch = StandardSystemProperty.OS_ARCH.name().toLowerCase();
 
         if ( osname.startsWith( "linux" ) && osarch.contains( "64" ) )
         {
@@ -66,9 +82,9 @@ public enum Platform
 
         if ( osname.startsWith( "windows" ) )
         {
-            return  WIN32;
+            return WIN32;
         }
 
-        throw new UnsupportedPlatformException( "Supported platforms are: " + values() );
+        return UNSUPPORTED;
     }
 }
