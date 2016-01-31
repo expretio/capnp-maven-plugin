@@ -66,8 +66,6 @@
         <maven-plugin-testing-harness.version>3.3.0</maven-plugin-testing-harness.version>
 
         <guava.version>18.0</guava.version>
-
-        <aether.version>1.13.1</aether.version>
     </properties>
 
     <build>
