@@ -35,8 +35,6 @@ public final class TestUtils
         return new DirectoryAssert(directory);
     }
 
-    // [Inner classes]
-
     public static class DirectoryAssert
     {
         private File directory;
@@ -65,6 +63,5 @@ public final class TestUtils
 
             return this;
         }
-
     }
 }
