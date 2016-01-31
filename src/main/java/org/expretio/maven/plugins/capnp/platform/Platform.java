@@ -9,14 +9,7 @@ public enum Platform
     WIN32( "windows/x86/capnp.exe", "windows/x86/capnpc-java.exe" ),
     UNSUPPORTED( null, null );
 
-    private static final Platform currentPlatform;
-
-    static
-    {
-        detect();
-
-        currentPlatform = Platform.getCurrent();
-    }
+    private static final Platform CURRENT_PLATFORM = detect();
 
     private static final String base = "org/expretio/maven/capnp/";
 
@@ -62,25 +55,25 @@ public enum Platform
 
     public static Platform getCurrent()
     {
-        return currentPlatform;
+        return CURRENT_PLATFORM;
     }
 
     protected static Platform detect()
     {
-        String osname = StandardSystemProperty.OS_NAME.name().toLowerCase();
-        String osarch = StandardSystemProperty.OS_ARCH.name().toLowerCase();
+        String osName = StandardSystemProperty.OS_NAME.value().toLowerCase();
+        String osArch = StandardSystemProperty.OS_ARCH.value().toLowerCase();
 
-        if ( osname.startsWith( "linux" ) && osarch.contains( "64" ) )
+        if ( osName.startsWith( "linux" ) && osArch.contains( "amd64" ) )
         {
             return LINUX64;
         }
 
-        if ( osname.startsWith( "mac os x" ) && osarch.contains( "64" ) )
+        if ( osName.startsWith( "mac os x" ) && osArch.contains( "64" ) )
         {
             return OSX64;
         }
 
-        if ( osname.startsWith( "windows" ) )
+        if ( osName.startsWith( "windows" ) )
         {
             return WIN32;
         }
