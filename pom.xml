@@ -42,6 +42,19 @@
         <name>Expretio Technologies, Inc</name>
     </organization>
 
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/expretio/capnp-maven-plugin/issues</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <distribution>manual</distribution>
+            <url>https://github.com/expretio/capnp-maven-plugin/blob/master/LICENSE</url>
+        </license>
+    </licenses>
+
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
