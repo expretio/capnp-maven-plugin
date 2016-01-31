@@ -10,6 +10,8 @@ public enum Platform
     UNSUPPORTED( null, null );
 
     private static final Platform CURRENT_PLATFORM = detect();
+    private static String currentOsName ;
+    private static String currentOsArch;
 
     private static final String base = "org/expretio/maven/capnp/";
 
@@ -58,10 +60,23 @@ public enum Platform
         return CURRENT_PLATFORM;
     }
 
+    public static String getCurrentOsName()
+    {
+        return currentOsName;
+    }
+
+    public static String getCurrentOsArch()
+    {
+        return currentOsArch;
+    }
+
     protected static Platform detect()
     {
-        String osName = StandardSystemProperty.OS_NAME.value().toLowerCase();
-        String osArch = StandardSystemProperty.OS_ARCH.value().toLowerCase();
+        currentOsName = StandardSystemProperty.OS_NAME.value();
+        String osName = currentOsName.toLowerCase();
+
+        currentOsArch = StandardSystemProperty.OS_ARCH.value();
+        String osArch = currentOsArch.toLowerCase();
 
         if ( osName.startsWith( "linux" ) && osArch.contains( "amd64" ) )
         {

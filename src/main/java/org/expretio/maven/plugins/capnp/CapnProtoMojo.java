@@ -168,7 +168,8 @@ public class CapnProtoMojo
 
     // [ Utility methods ]
 
-    private void doHandleNativeDependency() throws MojoFailureException
+    private void doHandleNativeDependency()
+        throws MojoExecutionException
     {
         if ( !handleNativeDependency )
         {
@@ -185,12 +186,21 @@ public class CapnProtoMojo
     }
 
     private Artifact createNativeArtifact()
+        throws MojoExecutionException
     {
         String classifier = nativeDependencyClassifier;
 
         if ( classifier.equals( automaticClassifier ) )
         {
             Platform platform = Platform.getCurrent();
+
+            if ( platform == Platform.UNSUPPORTED )
+            {
+                throw new MojoExecutionException(
+                    "Unsupported platform for " + Platform.getCurrentOsName()
+                        + " (" + Platform.getCurrentOsArch() + ")" );
+            }
+
             classifier = platform.getClassifier();
         }
 
@@ -202,7 +212,8 @@ public class CapnProtoMojo
             nativeDependencyVersion );
     }
 
-    private URL[] resolve( Artifact artifact ) throws MojoFailureException
+    private URL[] resolve( Artifact artifact )
+        throws MojoExecutionException
     {
         ArtifactRequest request = new ArtifactRequest( artifact, remoteRepository, null );
 
@@ -214,7 +225,7 @@ public class CapnProtoMojo
         }
         catch ( ArtifactResolutionException | MalformedURLException e )
         {
-            throw new MojoFailureException( "Cannot resolve artifact: " + artifact, e );
+            throw new MojoExecutionException( "Cannot resolve artifact: " + artifact, e );
         }
     }
 

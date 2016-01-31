@@ -41,7 +41,12 @@ public class ResourceProvider
 {
     public static ResourceProvider create( File workDirectory )
     {
-        return new ResourceProvider( workDirectory );
+        return new ResourceProvider( Platform.getCurrent(), workDirectory );
+    }
+
+    public static ResourceProvider create( Platform platform, File workDirectory )
+    {
+        return new ResourceProvider( platform, workDirectory );
     }
 
     private File workDirectory;
@@ -54,10 +59,10 @@ public class ResourceProvider
     /**
      * Constructor.
      */
-    private ResourceProvider( File workDirectory )
+    private ResourceProvider( Platform platform, File workDirectory )
     {
         this.workDirectory = workDirectory;
-        this.platform = Platform.getCurrent();
+        this.platform = platform;
     }
 
     /**
