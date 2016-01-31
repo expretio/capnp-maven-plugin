@@ -49,7 +49,7 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
-import org.expretio.maven.plugins.capnp.platform.Platform;
+import org.expretio.maven.plugins.capnp.util.Platform;
 
 import com.google.common.collect.Lists;
 

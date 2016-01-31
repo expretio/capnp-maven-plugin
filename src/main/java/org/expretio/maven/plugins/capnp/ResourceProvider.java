@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.expretio.maven.plugins.capnp.platform.Platform;
+import org.expretio.maven.plugins.capnp.util.Platform;
 
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Resources;

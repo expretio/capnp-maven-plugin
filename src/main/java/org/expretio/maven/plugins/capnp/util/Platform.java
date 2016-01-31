@@ -1,4 +1,4 @@
-package org.expretio.maven.plugins.capnp.platform;
+package org.expretio.maven.plugins.capnp.util;
 
 import com.google.common.base.StandardSystemProperty;
 
