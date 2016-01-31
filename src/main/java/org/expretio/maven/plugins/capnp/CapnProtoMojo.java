@@ -190,7 +190,7 @@ public class CapnProtoMojo
 
         if ( classifier.equals( automaticClassifier ) )
         {
-            Platform platform = Platform.detect();
+            Platform platform = Platform.getCurrent();
             classifier = platform.getClassifier();
         }
 

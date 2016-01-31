@@ -57,7 +57,7 @@ public class ResourceProvider
     private ResourceProvider( File workDirectory )
     {
         this.workDirectory = workDirectory;
-        this.platform = Platform.detect();
+        this.platform = Platform.getCurrent();
     }
 
     /**
