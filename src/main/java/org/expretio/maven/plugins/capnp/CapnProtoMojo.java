@@ -45,6 +45,7 @@ import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
@@ -204,12 +205,12 @@ public class CapnProtoMojo
             classifier = platform.getClassifier();
         }
 
-        return new org.eclipse.aether.artifact.DefaultArtifact(
-            "org.expretio.maven",
-            "capnp-natives",
-            classifier,
-            "jar",
-            nativeDependencyVersion );
+        return new DefaultArtifact(
+                    "org.expretio.maven",
+                    "capnp-natives",
+                    classifier,
+                    "jar",
+                    nativeDependencyVersion );
     }
 
     private URL[] resolve( Artifact artifact )
