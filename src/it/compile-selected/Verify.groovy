@@ -2,9 +2,9 @@ import static org.expretio.maven.plugins.capnp.util.TestUtils.*;
 
 import java.io.*;
 
-import org.expretio.maven.plugins.capnp.platform.Platform;
+import org.expretio.maven.plugins.capnp.util.Platform;
 
-Platform platform = Platform.detect();
+Platform platform = Platform.getCurrent();
 
 String packageBase = "org/expretio/maven/plugins/capnp";
 
