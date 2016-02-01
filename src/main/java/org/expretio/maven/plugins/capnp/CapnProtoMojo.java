@@ -147,15 +147,28 @@ public class CapnProtoMojo
     @Parameter( defaultValue = "true", required = true )
     private boolean handleNativeDependency;
 
+    // Current platform
+    private Platform platform;
+
     @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
+        platform = Platform.getCurrent();
+
+        if ( platform == Platform.UNSUPPORTED )
+        {
+            throw new MojoExecutionException(
+                "Unsupported platform for " + Platform.getCurrentOsName()
+                    + " (" + Platform.getCurrentOsArch() + ")" );
+        }
+
         doHandleNativeDependency();
 
         mavenProject.addCompileSourceRoot( outputDirectory.getAbsolutePath() );
 
         CapnpCompiler compiler = CapnpCompiler.builder()
+            .setResourceProvider( ResourceProvider.create( platform, workDirectory ) )
             .setOutputDirectory( outputDirectory )
             .setSchemaDirectory( schemaDirectory )
             .setWorkDirectory( workDirectory )
@@ -193,15 +206,6 @@ public class CapnProtoMojo
 
         if ( classifier.equals( automaticClassifier ) )
         {
-            Platform platform = Platform.getCurrent();
-
-            if ( platform == Platform.UNSUPPORTED )
-            {
-                throw new MojoExecutionException(
-                    "Unsupported platform for " + Platform.getCurrentOsName()
-                        + " (" + Platform.getCurrentOsArch() + ")" );
-            }
-
             classifier = platform.getClassifier();
         }
 

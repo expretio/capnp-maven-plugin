@@ -44,9 +44,9 @@ public class CapnpCompiler
         return new Builder();
     }
 
-    private Command command;
-    private List<String> schemas;
-    private boolean verbose;
+    private final Command command;
+    private final List<String> schemas;
+    private final boolean verbose;
 
     /**
      * Constructor.
@@ -102,7 +102,7 @@ public class CapnpCompiler
 
     private static class Command
     {
-        private ResourceProvider resources;
+        private ResourceProvider resourceProvider;
 
         private File outputDirectory;
         private File schemaDirectory;
@@ -112,13 +112,14 @@ public class CapnpCompiler
         private List<String> base = new ArrayList<>();
 
         public Command(
+                ResourceProvider resourceProvider,
                 File outputDirectory,
                 File schemaDirectory,
                 File workDirectory,
                 List<File> importDirectories )
             throws MojoExecutionException, MojoFailureException
         {
-            this.resources = ResourceProvider.create( workDirectory );
+            this.resourceProvider = resourceProvider;
             this.outputDirectory = outputDirectory;
             this.schemaDirectory = schemaDirectory;
             this.workDirectory = workDirectory;
@@ -145,7 +146,7 @@ public class CapnpCompiler
             {
                 FileUtils.copyDirectoryStructure( schemaDirectory, workDirectory );
 
-                importDirectories.add( resources.getJavaSchema().getParentFile() );
+                importDirectories.add( resourceProvider.getJavaSchema().getParentFile() );
                 importDirectories.add( schemaDirectory );
 
                 setBase();
@@ -159,10 +160,10 @@ public class CapnpCompiler
         private void setBase()
             throws IOException
         {
-            base.add( resources.getCapnp().getAbsolutePath() );
+            base.add( resourceProvider.getCapnp().getAbsolutePath() );
             base.add( "compile" );
             base.add( "--verbose" );
-            base.add( "-o" + resources.getCapnpcJava().getAbsolutePath() + ":" + outputDirectory.getAbsolutePath() );
+            base.add( "-o" + resourceProvider.getCapnpcJava().getAbsolutePath() + ":" + outputDirectory.getAbsolutePath() );
 
             for ( File importDirectory : importDirectories )
             {
@@ -173,6 +174,7 @@ public class CapnpCompiler
 
     public static class Builder
     {
+        private ResourceProvider resourceProvider;
         private File outputDirectory;
         private File schemaDirectory;
         private File workDirectory;
@@ -185,9 +187,27 @@ public class CapnpCompiler
         {
             validate();
 
-            Command command = new Command( outputDirectory, schemaDirectory, workDirectory, importDirectories );
+            if ( resourceProvider == null )
+            {
+                resourceProvider = ResourceProvider.create( workDirectory );
+            }
+
+            Command command =
+                new Command(
+                        resourceProvider,
+                        outputDirectory,
+                        schemaDirectory,
+                        workDirectory,
+                        importDirectories );
 
             return new CapnpCompiler( command, schemas, verbose );
+        }
+
+        public Builder setResourceProvider( ResourceProvider resourceProvider )
+        {
+            this.resourceProvider = resourceProvider;
+
+            return this;
         }
 
         public Builder setOutputDirectory( File outputDirectory )
