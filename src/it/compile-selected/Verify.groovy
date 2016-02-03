@@ -2,10 +2,6 @@ import static org.expretio.maven.plugins.capnp.util.TestUtils.*;
 
 import java.io.*;
 
-import org.expretio.maven.plugins.capnp.util.Platform;
-
-Platform platform = Platform.getCurrent();
-
 String packageBase = "org/expretio/maven/plugins/capnp";
 
 File baseDirectory = new File(basedir, "target");
@@ -14,10 +10,7 @@ File outputDirectory = new File(baseDirectory, "output");
 
 assertThat(workDirectory)
     .contains(packageBase + "/alpha/alpha.capnp")
-    .contains(packageBase + "/beta/beta.capnp")
-    .contains(platform.getCapnp())
-    .contains(platform.getCapnpcJava())
-    .contains(platform.getJavaSchema());
+    .contains(packageBase + "/beta/beta.capnp");
 
 assertThat(outputDirectory)
     .contains(packageBase + "/alpha/AlphaCapnp.java")
