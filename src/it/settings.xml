@@ -70,6 +70,16 @@
 
             <repositories>
                 <repository>
+                    <id>local.central</id>
+                    <url>@localRepositoryUrl@</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
                     <id>oss-snapshots</id>
                     <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
                     <releases>

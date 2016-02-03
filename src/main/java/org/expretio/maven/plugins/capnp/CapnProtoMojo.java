@@ -24,7 +24,12 @@ package org.expretio.maven.plugins.capnp;
 
 import static com.google.common.io.Files.*;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -41,6 +46,7 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
@@ -50,9 +56,12 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
-import org.expretio.maven.plugins.capnp.util.Platform;
+import org.expretio.maven.plugins.capnp.util.JavaPlatform;
+import org.expretio.maven.plugins.capnp.util.NativesManager;
+import org.expretio.maven.plugins.capnp.util.NativesManager.NativesInfo;
 
 import com.google.common.collect.Lists;
+import com.google.common.io.ByteStreams;
 
 
 @Mojo(
@@ -60,6 +69,7 @@ import com.google.common.collect.Lists;
     defaultPhase = LifecyclePhase.GENERATE_SOURCES,
     threadSafe = true,
     requiresProject = true,
+    requiresDependencyResolution = ResolutionScope.RUNTIME,
     requiresOnline = false
 )
 public class CapnProtoMojo
@@ -147,56 +157,51 @@ public class CapnProtoMojo
     @Parameter( defaultValue = "true", required = true )
     private boolean handleNativeDependency;
 
-    // Current platform
-    private Platform platform;
+    private NativesManager nativesManager;
+    private NativesInfo currentNativesInfo;
 
     @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        platform = Platform.getCurrent();
-
-        if ( platform == Platform.UNSUPPORTED )
+        if ( handleNativeDependency )
         {
-            throw new MojoExecutionException(
-                "Unsupported platform for " + Platform.getCurrentOsName()
-                    + " (" + Platform.getCurrentOsArch() + ")" );
+            doHandleNativeDependency();
+        }
+        else
+        {
+            nativesManager = new NativesManager();
         }
 
-        doHandleNativeDependency();
+        nativesManager.registerAllClassPathDescriptors();
+        currentNativesInfo = nativesManager.getNativesInfoForCurrentPlatform();
 
         mavenProject.addCompileSourceRoot( outputDirectory.getAbsolutePath() );
 
-        CapnpCompiler compiler = CapnpCompiler.builder()
-            .setResourceProvider( ResourceProvider.create( platform, workDirectory ) )
-            .setOutputDirectory( outputDirectory )
-            .setSchemaDirectory( schemaDirectory )
-            .setWorkDirectory( workDirectory )
-            .addSchemas( getSchemas() )
-            .addImportDirectories( getImportDirectories() )
-            .setVerbose( verbose )
-            .build();
+        workDirectory.mkdirs();
+
+        CapnpCompiler compiler =
+            CapnpCompiler.builder()
+                .setOutputDirectory( outputDirectory )
+                .setSchemaDirectory( schemaDirectory )
+                .setWorkDirectory( workDirectory )
+                .setCapnpFile( copyResource( currentNativesInfo.getCapnpUrl(), workDirectory ) )
+                .setCapnpcJavaFile( copyResource( currentNativesInfo.getCapnpcJavaUrl(), workDirectory ) )
+                .setCapnpJavaSchemaFile( copyResource( currentNativesInfo.getCapnpJavaSchemaUrl(), workDirectory ) )
+                .addSchemas( getSchemas() )
+                .addImportDirectories( getImportDirectories() )
+                .setVerbose( verbose )
+                .build();
 
         compiler.compile();
     }
 
-    // [ Utility methods ]
-
     private void doHandleNativeDependency()
         throws MojoExecutionException
     {
-        if ( !handleNativeDependency )
-        {
-            return;
-        }
-
         Artifact artifact = createNativeArtifact();
 
-        URL[] url = resolve( artifact );
-
-        URLClassLoader urlClassLoader = new URLClassLoader( url );
-
-        Thread.currentThread().setContextClassLoader( urlClassLoader );
+        nativesManager = new NativesManager( new URLClassLoader( new URL[] { resolve( artifact ) } ) );
     }
 
     private Artifact createNativeArtifact()
@@ -206,7 +211,12 @@ public class CapnProtoMojo
 
         if ( classifier.equals( automaticClassifier ) )
         {
-            classifier = platform.getClassifier();
+            classifier =
+                (
+                    JavaPlatform.getCurrentOs().name().toLowerCase()
+                        + "-"
+                        + JavaPlatform.getCurrentArch().toLowerCase()
+                );
         }
 
         return new DefaultArtifact(
@@ -217,7 +227,7 @@ public class CapnProtoMojo
                     nativeDependencyVersion );
     }
 
-    private URL[] resolve( Artifact artifact )
+    private URL resolve( Artifact artifact )
         throws MojoExecutionException
     {
         ArtifactRequest request = new ArtifactRequest( artifact, remoteRepository, null );
@@ -226,20 +236,12 @@ public class CapnProtoMojo
         {
             ArtifactResult result = repositorySystem.resolveArtifact( repositorySession, request );
 
-            return toURL( result.getArtifact() );
+            return result.getArtifact().getFile().toURI().toURL();
         }
         catch ( ArtifactResolutionException | MalformedURLException e )
         {
             throw new MojoExecutionException( "Cannot resolve artifact: " + artifact, e );
         }
-    }
-
-    private URL[] toURL( Artifact artifact ) throws MalformedURLException
-    {
-        URL[] urls = new URL[1];
-        urls[0] = artifact.getFile().toURI().toURL();
-
-        return urls;
     }
 
     private Collection<String> getSchemas()
@@ -256,7 +258,7 @@ public class CapnProtoMojo
     {
         List<String> allSchemas = Lists.newArrayList();
 
-        for ( File file : fileTreeTraverser().preOrderTraversal( schemaDirectory) )
+        for ( File file : fileTreeTraverser().preOrderTraversal( schemaDirectory ) )
         {
             if ( isSchema( file ) )
             {
@@ -293,5 +295,31 @@ public class CapnProtoMojo
 
         // capnp native program is not compatible with windows file separator
         return relativized.replace( '\\', '/' );
+    }
+
+    private File copyResource( URL source, File target )
+        throws MojoExecutionException
+    {
+        try
+        {
+            String fileName = new File( source.getPath() ).getName();
+            File targetFile = new File( target, fileName );
+
+            try (
+                InputStream in = new BufferedInputStream( source.openStream() );
+                OutputStream out = new BufferedOutputStream( new FileOutputStream( targetFile ) );
+            )
+            {
+                ByteStreams.copy( in, out );
+
+                targetFile.setExecutable( true );
+
+                return targetFile;
+            }
+        }
+        catch ( Exception e )
+        {
+            throw new MojoExecutionException( "Unable to copy natives to work directory: " + workDirectory, e );
+        }
     }
 }
