@@ -291,6 +291,10 @@ public class CapnpCompiler
             validate( schemaDirectory, "Schema base directory" );
             validate( workDirectory, "Working directory" );
 
+            validate( capnpFile, "capnpn file" );
+            validate( capnpcJavaFile, "capnpnc java file" );
+            validate( capnpJavaSchemaFile, "capnpn java schema file" );
+
             for ( File importDirectory : importDirectories )
             {
                 validate( importDirectory, "Import directory" );
@@ -302,17 +306,12 @@ public class CapnpCompiler
             }
         }
 
-        private void validate( File directory, String name )
+        private void validate( File file, String name )
             throws MojoFailureException
         {
-            if ( directory == null )
+            if ( file == null )
             {
-                throw new MojoFailureException( name + " must be specified." );
-            }
-
-            if ( directory.isFile() )
-            {
-                throw new MojoFailureException( name + " must not be a file." );
+                throw new MojoFailureException( name + " is mandatory." );
             }
         }
     }

@@ -98,6 +98,7 @@ public class NativesManager
                     .add( "capnpcJavaUrl", capnpcJavaUrl )
                     .add( "capnpJavaSchemaPath", capnpJavaSchemaPath )
                     .add( "capnpJavaSchemaUrl", capnpJavaSchemaUrl )
+                    .add( "classLoader", classLoader)
                     .toString();
         }
     }
@@ -175,6 +176,7 @@ public class NativesManager
                     natives.capnpUrl = cl.getResource( natives.capnpPath );
                     natives.capnpcJavaUrl = cl.getResource( natives.capnpcJavaPath );
                     natives.capnpJavaSchemaUrl = cl.getResource( natives.capnpJavaSchemaPath );
+                    natives.classLoader = cl;
 
                     nativesTable.put( natives.osName, natives.archName, natives );
                 }
