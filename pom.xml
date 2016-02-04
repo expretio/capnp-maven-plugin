@@ -222,6 +222,12 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.expretio.maven</groupId>
+            <artifactId>capnp-natives</artifactId>
+            <version>0.5.3-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
     <reporting>
