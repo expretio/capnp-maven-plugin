@@ -153,7 +153,7 @@ public class CapnProtoMojo
     /**
      * Set to false to configure manually the <code>org.expretio.maven:capnp-natives</code> dependency.
      */
-    @Parameter( defaultValue = "true", required = true )
+    @Parameter( defaultValue = "false", required = true )
     private boolean handleNativeDependency;
 
     private NativesManager nativesManager;
