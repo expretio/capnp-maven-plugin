@@ -55,7 +55,6 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
-import org.eclipse.aether.resolution.ArtifactResult;
 import org.expretio.maven.plugins.capnp.util.JavaPlatform;
 import org.expretio.maven.plugins.capnp.util.NativesManager;
 import org.expretio.maven.plugins.capnp.util.NativesManager.NativesInfo;
@@ -234,9 +233,13 @@ public class CapnProtoMojo
 
         try
         {
-            ArtifactResult result = repositorySystem.resolveArtifact( repositorySession, request );
-
-            return result.getArtifact().getFile().toURI().toURL();
+            return
+                repositorySystem
+                    .resolveArtifact( repositorySession, request )
+                    .getArtifact()
+                    .getFile()
+                    .toURI()
+                    .toURL();
         }
         catch ( ArtifactResolutionException | MalformedURLException e )
         {

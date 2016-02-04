@@ -116,7 +116,37 @@
                     </execution>
                 </executions>
             </plugin>
-        </plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <minimizeJar>true</minimizeJar>
+                            <dependencyReducedPomLocation>${project.build.directory}/shaded-pom.xml</dependencyReducedPomLocation>
+                            <artifactSet>
+                                <includes>
+                                    <include>net.java.dev.jna:jna</include>
+                                </includes>
+                            </artifactSet>
+                            <filters>
+                                <filter>
+                                    <artifact>net.java.dev.jna:jna</artifact>
+                                    <includes>
+                                        <include>com/sun/jna/Platform.class</include>
+                                    </includes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+          </plugins>
     </build>
 
     <dependencies>
@@ -257,7 +287,7 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <debug>true</debug>
+                                    <debug>false</debug>
                                     <streamLogs>true</streamLogs>
                                     <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
                                     <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
