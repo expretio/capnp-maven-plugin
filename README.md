@@ -52,7 +52,7 @@ Goal `generate`
 | name | type | Since | Description |
 | ---- | ---- | ----- | ----------- |
 | outputDirectory | File | 1.0 | Output directory of generated java classes.<br/>**Default:** `${project.build.directory}/generated-sources/capnp` |
-| schemaDirectory | File | 1.0 | Base directory of definition schemas.<br/>**Default:** `src/main/capnp/schema`|
+| schemaDirectory | File | 1.0 | Base directory of definition schemas.<br/>**Default:** `src/main/capnp`|
 | workDirectory | File | 1.0 | Compilation process working directory.<br/>**Default:** `${project.build.directory}/capnp-work` |
 | schemaFileExtension | String | 1.0 | Extension of definition schema files.<br/>**Default:** `capnp`<br/>**Example:** `foo.capnp` |
 | schemas | File[ ] | 1.0 | Explicitly specified definition schema files. If none, all files matching `schemaFileExtension` under `schemaDirectory` will be compiled. Files must be specified relatively from `schemaDirectory`.|
