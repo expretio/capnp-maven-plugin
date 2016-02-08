@@ -8,6 +8,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +26,7 @@ public class NativesManager
     public static final String CAPNP_NATIVES_DESCRIPTOR_FILE_NAME =
             "capnp-natives.xml";
 
-    protected static final String CAPNP_NATIVES_DESCRIPTOR_RESOURCES_NAME =
+    protected static final String CAPNP_NATIVES_DESCRIPTOR_RESOURCE_PATH =
             "META-INF/" + CAPNP_NATIVES_DESCRIPTOR_FILE_NAME;
 
     public class NativesInfo
@@ -38,7 +39,6 @@ public class NativesManager
         private URL capnpcJavaUrl;
         private String capnpJavaSchemaPath;
         private URL capnpJavaSchemaUrl;
-        private ClassLoader classLoader;
 
         public String getOsName()
         {
@@ -80,11 +80,6 @@ public class NativesManager
             return capnpJavaSchemaUrl;
         }
 
-        public ClassLoader getClassLoader()
-        {
-            return classLoader;
-        }
-
         @Override
         public String toString()
         {
@@ -98,39 +93,30 @@ public class NativesManager
                     .add( "capnpcJavaUrl", capnpcJavaUrl )
                     .add( "capnpJavaSchemaPath", capnpJavaSchemaPath )
                     .add( "capnpJavaSchemaUrl", capnpJavaSchemaUrl )
-                    .add( "classLoader", classLoader)
                     .toString();
         }
     }
 
+    private final List<URL> resourceUrls = new ArrayList<>();
     private final Table<String, String, NativesInfo> nativesTable = HashBasedTable.create();
-
-    private final List<ClassLoader> classLoaders = new ArrayList<>();
 
     public NativesManager() {}
 
-    public NativesManager( ClassLoader... classLoaders )
+    public void addResourceUrl( URL url )
     {
-        Collections.addAll( this.classLoaders, classLoaders );
+        resourceUrls.add( url );
     }
 
-    public void registerAllClassPathDescriptors()
+    public void registerAllDescriptors()
         throws NativesManagerException
     {
         try
         {
-            List<ClassLoader> searchClassLoaders = new ArrayList<>( classLoaders );
-            searchClassLoaders.add( Thread.currentThread().getContextClassLoader() );
+            ClassLoader cl = new URLClassLoader( resourceUrls.toArray( new URL[ resourceUrls.size() ] ) );
 
-            for ( ClassLoader cl : searchClassLoaders )
+            for ( URL url : findAllDescriptors( cl ) )
             {
-                for ( URL url : findAllDescriptors( cl ) )
-                {
-                    try ( InputStream reader = new BufferedInputStream( url.openStream() ) )
-                    {
-                        registerFromDescriptor( reader, cl );
-                    }
-                }
+                registerFromDescriptor( url, cl );
             }
         }
         catch ( Exception e )
@@ -139,14 +125,23 @@ public class NativesManager
         }
     }
 
-    public void registerFromDescriptor( InputStream xmlIn, ClassLoader cl )
+    public void registerFromDescriptor( URL url )
+        throws NativesManagerException
+    {
+        registerFromDescriptor( url, Thread.currentThread().getContextClassLoader() );
+    }
+
+    public void registerFromDescriptor( URL url, ClassLoader cl )
         throws NativesManagerException
     {
         try
         {
             XMLConfiguration config = new XMLConfiguration();
 
-            config.load( xmlIn );
+            try ( InputStream reader = new BufferedInputStream( url.openStream() ) )
+            {
+                config.load( reader );
+            }
 
             String basePath = config.getString( "base-path" );
 
@@ -176,7 +171,6 @@ public class NativesManager
                     natives.capnpUrl = cl.getResource( natives.capnpPath );
                     natives.capnpcJavaUrl = cl.getResource( natives.capnpcJavaPath );
                     natives.capnpJavaSchemaUrl = cl.getResource( natives.capnpJavaSchemaPath );
-                    natives.classLoader = cl;
 
                     nativesTable.put( natives.osName, natives.archName, natives );
                 }
@@ -204,6 +198,6 @@ public class NativesManager
     protected List<URL> findAllDescriptors( ClassLoader cl )
         throws IOException
     {
-        return Collections.list( cl.getResources( CAPNP_NATIVES_DESCRIPTOR_RESOURCES_NAME ) );
+        return Collections.list( cl.getResources( CAPNP_NATIVES_DESCRIPTOR_RESOURCE_PATH ) );
     }
 }

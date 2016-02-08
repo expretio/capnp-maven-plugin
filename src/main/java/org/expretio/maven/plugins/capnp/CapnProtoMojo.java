@@ -23,6 +23,7 @@
 package org.expretio.maven.plugins.capnp;
 
 import static com.google.common.io.Files.*;
+import static org.expretio.maven.plugins.capnp.util.JavaPlatform.*;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -32,13 +33,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -48,6 +50,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.Scanner;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
@@ -58,10 +61,15 @@ import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.expretio.maven.plugins.capnp.util.JavaPlatform;
 import org.expretio.maven.plugins.capnp.util.NativesManager;
 import org.expretio.maven.plugins.capnp.util.NativesManager.NativesInfo;
+import org.expretio.maven.plugins.capnp.util.NativesManagerException;
+import org.sonatype.plexus.build.incremental.BuildContext;
+import org.sonatype.plexus.build.incremental.DefaultBuildContext;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Table;
 import com.google.common.io.ByteStreams;
-
 
 @Mojo(
     name = "generate",
@@ -74,8 +82,15 @@ import com.google.common.io.ByteStreams;
 public class CapnProtoMojo
     extends AbstractMojo
 {
-    private static final String automaticClassifier = "auto";
-    private static final String defaultNativeDependencyVersion = "0.5.3-SNAPSHOT";
+    private static final String NATIVES_DEPENDENCY_VERSION_DEFAULT = "0.5.3-SNAPSHOT";
+    private static final String AUTO_CLASSIFIER_DEFAULT = "auto";
+
+    private static final String NATIVES_GROUP_ID = "org.expretio.capnp";
+    private static final String NATIVES_ARTIFACT_ID = "capnp-natives";
+    private static final String NATIVES_INDEX_CLASSIFIER = "capnp-natives-index";
+
+    @Component
+    private BuildContext buildContext = new DefaultBuildContext();
 
     @Component
     private RepositorySystem repositorySystem;
@@ -139,7 +154,7 @@ public class CapnProtoMojo
     /**
      * Version of the <code>org.expretio.maven:capnp-natives</code> dependency.
      */
-    @Parameter( defaultValue = defaultNativeDependencyVersion, required = true )
+    @Parameter( defaultValue = NATIVES_DEPENDENCY_VERSION_DEFAULT, required = true )
     private String nativeDependencyVersion ;
 
     /**
@@ -147,37 +162,41 @@ public class CapnProtoMojo
      * specified. It is recommended to use the default value, which adjusts the classifier to current platform
      * automatically.
      */
-    @Parameter( defaultValue = automaticClassifier, required = true )
+    @Parameter( defaultValue = AUTO_CLASSIFIER_DEFAULT, required = true )
     private String nativeDependencyClassifier;
 
     /**
      * Set to false to configure manually the <code>org.expretio.maven:capnp-natives</code> dependency.
      */
-    @Parameter( defaultValue = "false", required = true )
+    @Parameter( defaultValue = "true", required = true )
     private boolean handleNativeDependency;
 
-    private NativesManager nativesManager;
-    private NativesInfo currentNativesInfo;
+    private final NativesManager nativesManager = new NativesManager();
 
     @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        if ( handleNativeDependency )
-        {
-            doHandleNativeDependency();
-        }
-        else
-        {
-            nativesManager = new NativesManager();
-        }
-
-        nativesManager.registerAllClassPathDescriptors();
-        currentNativesInfo = nativesManager.getNativesInfoForCurrentPlatform();
-
         mavenProject.addCompileSourceRoot( outputDirectory.getAbsolutePath() );
 
+        Scanner scanner = buildContext.newScanner( schemaDirectory );
+        scanner.scan();
+
+        if ( scanner.getIncludedFiles().length < 1 )
+        {
+            return;
+        }
+
+        if ( handleNativeDependency )
+        {
+            doHandleNativesDependency();
+        }
+
+        nativesManager.registerAllDescriptors();
+
         workDirectory.mkdirs();
+
+        NativesInfo currentNativesInfo = nativesManager.getNativesInfoForCurrentPlatform();
 
         CapnpCompiler compiler =
             CapnpCompiler.builder()
@@ -195,34 +214,74 @@ public class CapnProtoMojo
         compiler.compile();
     }
 
-    private void doHandleNativeDependency()
+    private void doHandleNativesDependency()
         throws MojoExecutionException
     {
-        Artifact artifact = createNativeArtifact();
+        String classifier;
 
-        nativesManager = new NativesManager( new URLClassLoader( new URL[] { resolve( artifact ) } ) );
-    }
-
-    private Artifact createNativeArtifact()
-        throws MojoExecutionException
-    {
-        String classifier = nativeDependencyClassifier;
-
-        if ( classifier.equals( automaticClassifier ) )
+        if ( nativeDependencyClassifier.equals( AUTO_CLASSIFIER_DEFAULT ) )
         {
-            classifier =
-                (
-                    JavaPlatform.getCurrentOs().name().toLowerCase()
-                        + "-"
-                        + JavaPlatform.getCurrentArch().toLowerCase()
-                );
+            Table<String, String, String> indexTable = HashBasedTable.create();
+
+            try
+            {
+                XMLConfiguration index = new XMLConfiguration();
+
+                index.load( resolve( createNativesIndexArtifact() ) );
+
+                for ( HierarchicalConfiguration indexEntry : index.configurationsAt( "entry" ) )
+                {
+                    String osName = indexEntry.getString( "os-name" );
+                    String archNames = indexEntry.getString( "arch-names" );
+                    String mavenClassifier = indexEntry.getString( "maven-classifier" );
+
+                    for ( String archName : Splitter.on( ',' ).omitEmptyStrings().trimResults().split( archNames ) )
+                    {
+                        indexTable
+                            .put(
+                                osName.toUpperCase(),
+                                getCanonicalArchitecture( archName ),
+                                mavenClassifier );
+                    }
+                }
+
+                classifier =
+                    indexTable
+                        .get(
+                            JavaPlatform.getCurrentOs().toString(),
+                            getCanonicalArchitecture( JavaPlatform.getCurrentArch() ) );
+            }
+            catch ( Exception e )
+            {
+                throw new NativesManagerException( e );
+            }
+        }
+        else
+        {
+            classifier = nativeDependencyClassifier;
         }
 
+        nativesManager.addResourceUrl( resolve( createNativesArtifact( classifier ) ) );
+    }
+
+    private Artifact createNativesArtifact( String classifier )
+        throws MojoExecutionException
+    {
         return new DefaultArtifact(
-                    "org.expretio.maven",
-                    "capnp-natives",
+                    NATIVES_GROUP_ID,
+                    NATIVES_ARTIFACT_ID,
                     classifier,
                     "jar",
+                    nativeDependencyVersion );
+    }
+
+    private Artifact createNativesIndexArtifact()
+    {
+        return new DefaultArtifact(
+                    NATIVES_GROUP_ID,
+                    NATIVES_ARTIFACT_ID,
+                    NATIVES_INDEX_CLASSIFIER,
+                    "xml",
                     nativeDependencyVersion );
     }
 
@@ -284,20 +343,13 @@ public class CapnProtoMojo
 
     private boolean isSchema( File file )
     {
-        if ( file.isDirectory() )
-        {
-            return false;
-        }
-
-        return file.getName().endsWith( "." + schemaFileExtension );
+        return ( !file.isDirectory() && file.getName().endsWith( "." + schemaFileExtension ) );
     }
 
     private String relativize( Path path )
     {
-        String relativized = schemaDirectory.toPath().relativize( path ).toString();
-
         // capnp native program is not compatible with windows file separator
-        return relativized.replace( '\\', '/' );
+        return schemaDirectory.toPath().relativize( path ).toString().replace( '\\', '/' );
     }
 
     private File copyResource( URL source, File target )

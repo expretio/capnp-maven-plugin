@@ -56,6 +56,8 @@
     </licenses>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
 
@@ -116,37 +118,37 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.3</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <minimizeJar>true</minimizeJar>
-                            <dependencyReducedPomLocation>${project.build.directory}/shaded-pom.xml</dependencyReducedPomLocation>
-                            <artifactSet>
-                                <includes>
-                                    <include>net.java.dev.jna:jna</include>
-                                </includes>
-                            </artifactSet>
-                            <filters>
-                                <filter>
-                                    <artifact>net.java.dev.jna:jna</artifact>
-                                    <includes>
-                                        <include>com/sun/jna/Platform.class</include>
-                                    </includes>
-                                </filter>
-                            </filters>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-          </plugins>
+<!--             <plugin> -->
+<!--                 <groupId>org.apache.maven.plugins</groupId> -->
+<!--                 <artifactId>maven-shade-plugin</artifactId> -->
+<!--                 <version>2.4.3</version> -->
+<!--                 <executions> -->
+<!--                     <execution> -->
+<!--                         <phase>package</phase> -->
+<!--                         <goals> -->
+<!--                             <goal>shade</goal> -->
+<!--                         </goals> -->
+<!--                         <configuration> -->
+<!--                             <minimizeJar>true</minimizeJar> -->
+<!--                             <dependencyReducedPomLocation>${project.build.directory}/shaded-pom.xml</dependencyReducedPomLocation> -->
+<!--                             <artifactSet> -->
+<!--                                 <includes> -->
+<!--                                     <include>net.java.dev.jna:jna</include> -->
+<!--                                 </includes> -->
+<!--                             </artifactSet> -->
+<!--                             <filters> -->
+<!--                                 <filter> -->
+<!--                                     <artifact>net.java.dev.jna:jna</artifact> -->
+<!--                                     <includes> -->
+<!--                                         <include>com/sun/jna/Platform.class</include> -->
+<!--                                     </includes> -->
+<!--                                 </filter> -->
+<!--                             </filters> -->
+<!--                         </configuration> -->
+<!--                     </execution> -->
+<!--                 </executions> -->
+<!--             </plugin> -->
+        </plugins>
     </build>
 
     <dependencies>
@@ -195,6 +197,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.sonatype.plexus</groupId>
+            <artifactId>plexus-build-api</artifactId>
+            <version>0.0.7</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.maven.plugin-testing</groupId>
             <artifactId>maven-plugin-testing-harness</artifactId>
             <version>${maven-plugin-testing-harness.version}</version>
@@ -220,12 +228,6 @@
             <artifactId>maven-compat</artifactId>
             <version>${maven.version}</version>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.expretio.maven</groupId>
-            <artifactId>capnp-natives</artifactId>
-            <version>0.5.3-SNAPSHOT</version>
         </dependency>
 
     </dependencies>
@@ -293,7 +295,7 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <debug>false</debug>
+                                    <debug>true</debug>
                                     <streamLogs>true</streamLogs>
                                     <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
                                     <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>

@@ -53,14 +53,6 @@
     </profiles>
 -->
 
-    <servers>
-        <server>
-            <id>oss-snapshots</id>
-            <username>${env.OSS_SONATYPE_USERNAME}</username>
-            <password>${env.OSS_SONATYPE_PASSWORD}</password>
-        </server>
-    </servers>
-
     <profiles>
         <profile>
             <id>default</id>
