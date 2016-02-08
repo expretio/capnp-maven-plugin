@@ -116,7 +116,7 @@ public class CapnProtoMojo
     /**
      * Base directory of definition schemas.
      */
-    @Parameter( defaultValue = "src/main/capnp/schema", required = true )
+    @Parameter( defaultValue = "src/main/capnp", required = true )
     private File schemaDirectory;
 
     /**

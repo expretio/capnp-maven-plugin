@@ -54,7 +54,7 @@
                 <executions>
                     <execution>
                         <configuration>
-                            <schemaDirectory>../resources/schema</schemaDirectory>
+                            <schemaDirectory>../resources</schemaDirectory>
                             <outputDirectory>${project.build.directory}/output</outputDirectory>
                             <workDirectory>${project.build.directory}/work</workDirectory>
                         </configuration>
