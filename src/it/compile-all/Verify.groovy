@@ -9,11 +9,11 @@ File workDirectory = new File( baseDirectory, "work" );
 File outputDirectory = new File( baseDirectory, "output" );
 
 assertThat(workDirectory)
-    .contains(packageBase + "/alpha/alpha.capnp")
-    .contains(packageBase + "/beta/beta.capnp");
+    .contains( packageBase + "/alpha/alpha.capnp" )
+    .contains( packageBase + "/beta/beta.capnp" );
 
 assertThat(outputDirectory)
-    .contains(packageBase + "/alpha/AlphaCapnp.java")
-    .contains(packageBase + "/beta/BetaCapnp.java");
+    .contains( packageBase + "/alpha/AlphaCapnp.java" )
+    .contains( packageBase + "/beta/BetaCapnp.java" );
 
 return true;
