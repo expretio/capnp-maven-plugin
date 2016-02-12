@@ -28,13 +28,13 @@ The simplest configuration will compile all schema definition files contained in
     </executions>
 </plugin>
 ```
-The [Cap'n Proto Java Plugin](https://dwrensha.github.io/capnproto-java/index.html) runtime dependency is needed.
+The [Cap'n Proto Java](https://dwrensha.github.io/capnproto-java/index.html) runtime dependency is needed.
 
 ```xml
 <dependency>
     <groupId>org.capnproto</groupId>
     <artifactId>runtime</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.1</version>
 </dependency>
 ```
 
@@ -44,6 +44,7 @@ Goal `generate`
 ### Attributes
 
 * Requires a Maven project to be executed.
+* Requires dependency resolution of artifacts in scope: runtime.
 * The goal is thread-safe and supports parallel builds.
 * Binds by default to the lifecycle phase: generate-sources.
 
