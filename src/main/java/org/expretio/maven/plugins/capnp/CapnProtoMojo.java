@@ -82,7 +82,7 @@ import com.google.common.io.ByteStreams;
 public class CapnProtoMojo
     extends AbstractMojo
 {
-    private static final String NATIVES_DEPENDENCY_VERSION_DEFAULT = "0.5.3-SNAPSHOT";
+    private static final String NATIVES_DEPENDENCY_VERSION_DEFAULT = "0.5.3";
     private static final String AUTO_CLASSIFIER_DEFAULT = "auto";
 
     private static final String NATIVES_GROUP_ID = "org.expretio.capnp";
