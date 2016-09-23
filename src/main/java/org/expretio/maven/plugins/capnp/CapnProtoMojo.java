@@ -22,8 +22,8 @@
  */
 package org.expretio.maven.plugins.capnp;
 
-import static com.google.common.io.Files.*;
-import static org.expretio.maven.plugins.capnp.util.JavaPlatform.*;
+import static com.google.common.io.Files.fileTreeTraverser;
+import static org.expretio.maven.plugins.capnp.util.JavaPlatform.getCanonicalArchitecture;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -82,7 +82,7 @@ import com.google.common.io.ByteStreams;
 public class CapnProtoMojo
     extends AbstractMojo
 {
-    private static final String NATIVES_DEPENDENCY_VERSION_DEFAULT = "0.5.3";
+    private static final String NATIVES_DEPENDENCY_VERSION_DEFAULT = "0.5.3-1-SNAPSHOT";
     private static final String AUTO_CLASSIFIER_DEFAULT = "auto";
 
     private static final String NATIVES_GROUP_ID = "org.expretio.capnp";
