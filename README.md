@@ -58,7 +58,7 @@ Goal `generate`
 | schemaFileExtension | String | 1.0 | Extension of definition schema files.<br/>**Default:** `capnp`<br/>**Example:** `foo.capnp` |
 | schemas | File[ ] | 1.0 | Explicitly specified definition schema files. If none, all files matching `schemaFileExtension` under `schemaDirectory` will be compiled. Files must be specified relatively from `schemaDirectory`.|
 | importDirectories | File[ ] | 1.0 | Supplementary import directories. Note: `schemaDirectory` is implicitly considered as an import directory.. |
-| nativeDependencyVersion | String | 1.0 | Version of the `org.expretio.maven:capnp-natives` dependency.<br/>**Default:** `0.5.3` |
+| nativeDependencyVersion | String | 1.0 | Version of the `org.expretio.maven:capnp-natives` dependency. |
 | nativeDependencyClassifier | String | 1.0 | Classifier of the `org.expretio.maven:capnp-natives` dependency, forcing the targeted platform when specified. It is recommended to use the default value, which adjusts the classifier to current platform automatically.<br/>**Default:** `auto` |
 | handleNativeDependency | Boolean | 1.0 | Set to `false` to configure manually the `org.expretio.maven:capnp-natives` dependency.<br/>**Default:** `true` |
 | verbose | Boolean | 1.0 | Set to `false` for no output.<br/>**Default:** `true` |
