@@ -90,9 +90,9 @@ Use `schemas` to explicitly specify which schemas to be compiled.
 Example - Using `java.capnp`
 ----------------------------
 
-The [java.capnp](https://dwrensha.github.io/capnproto-java/index.html) schema, providing `package` and `outerClassname` annotations, is available at the root of working directory.
-The following schema file `foo.capnp` illustrates how to import it.
+The [java.capnp](https://dwrensha.github.io/capnproto-java/index.html) schema, providing `package` and `outerClassname` annotations, is available at the root of working directory. The following schema illustrates how to import it.
 
+file: `${schemaDirectory}/org/expretio/one/foo.capnp`
 ```java
 @0xe9e172ef0f0049f6;
 
@@ -112,7 +112,7 @@ Example - Interdependent schemas
 
 Suppose schema `bar.capnp` depends on `FooStruct` defined in `foo.capnp`.
 
-#####file: `${schemaDirectory}/org/expretio/one/foo.capnp`
+file: `${schemaDirectory}/org/expretio/one/foo.capnp`
 ```java
 @0xe9e172ef0f0049f6;
 
@@ -127,7 +127,7 @@ struct FooStruct
 }
 ```
 
-#####file: `${schemaDirectory}/org/expretio/two/bar.capnp`
+file: `${schemaDirectory}/org/expretio/two/bar.capnp`
 ```java
 @0xb5724e25782451a6;
 
